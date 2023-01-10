@@ -11,8 +11,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -63,14 +63,14 @@ extern "C" {
  * ********************************** */
 
 /* ugeneration */
-typedef struct
+typedef struct ugeneration_t
 {
 	int32_t num_exports;
 	int32_t num_names;
 } ugeneration_t;
 
 /* uname */
-typedef struct
+typedef struct uname_t
 {
 	uint8_t len_name;
 	char *name;
@@ -78,7 +78,7 @@ typedef struct
 } uname_t;
 
 /* uexport */
-typedef struct
+typedef struct uexport_t
 {
 	int32_t class_index;	/* compact index */
 	int32_t super_index;	/* compact index */
@@ -91,7 +91,7 @@ typedef struct
 } uexport_t;
 
 /* uimport */
-typedef struct
+typedef struct uimport_t
 {
 	int32_t class_package;	/* compact index */
 	int32_t class_name;		/* compact index */
@@ -100,7 +100,7 @@ typedef struct
 } uimport_t;
 
 /* upackage */
-typedef struct
+typedef struct upackage_t
 {
 	uint32_t tag;
 	uint16_t format_version;
@@ -136,9 +136,9 @@ static int32_t upkg_read_compact_index(FILE *stream);
 static void upkg_print_members(upackage_t *upkg, FILE *stream);
 
 /* reading data from objects contained in a package */
-static size_t upkg_fread(void *dest, size_t size, size_t n, upackage_t *upkg, int export_index);
-static int upkg_fseek(long offset, int whence, upackage_t *upkg, int export_index);
-static long upkg_ftell(upackage_t *upkg, int export_index);
+static size_t upkg_fread(void *d, size_t s, size_t n, upackage_t *upkg, int i);
+static int upkg_fseek(long offset, int whence, upackage_t *upkg, int i);
+static long upkg_ftell(upackage_t *upkg, int i);
 
 /* *************************************
  *
@@ -172,7 +172,11 @@ static upackage_t *upkg_open(const char *filename)
 	fread(upkg, offsetof(upackage_t, generations), 1, upkg->fhandle);
 
 	/* check if tag is correct */
-	if (upkg->tag != 2653586369) return NULL;
+	if (upkg->tag != 2653586369)
+	{
+		upkg_close(upkg);
+		return NULL;
+	}
 
 	/* allocate generations */
 	upkg->generations = (ugeneration_t *)calloc(upkg->num_generations, sizeof(ugeneration_t));
@@ -374,8 +378,14 @@ static void upkg_print_members(upackage_t *upkg, FILE *stream)
 
 	for (i = 0; i < upkg->num_generations; i++)
 	{
-		fprintf(stream, "generation[%d].num_exports: %d\n", i, upkg->generations[i].num_exports);
-		fprintf(stream, "generation[%d].num_names: %d\n", i, upkg->generations[i].num_names);
+		fprintf(stream, "generations[%d]\n", i);
+
+		fprintf(stream, "\tnum_exports: %d\n",
+			upkg->generations[i].num_exports);
+
+		fprintf(stream, "\tnum_names: %d\n",
+			upkg->generations[i].num_names);
+
 		fprintf(stream, "\n");
 	}
 
@@ -397,10 +407,20 @@ static void upkg_print_members(upackage_t *upkg, FILE *stream)
 	for (i = 0; i < upkg->num_imports; i++)
 	{
 		fprintf(stream, "imports[%d]\n", i);
-		fprintf(stream, "\tclass_package: %d\n", upkg->imports[i].class_package);
-		fprintf(stream, "\tclass_name: %d\n", upkg->imports[i].class_name);
-		fprintf(stream, "\tpackage_index: %d\n", upkg->imports[i].package_index);
-		fprintf(stream, "\tobject_name: [%d]: %s\n", upkg->imports[i].object_name, upkg->names[upkg->imports[i].object_name].name);
+
+		fprintf(stream, "\tclass_package: %d\n",
+			upkg->imports[i].class_package);
+
+		fprintf(stream, "\tclass_name: %d\n",
+			upkg->imports[i].class_name);
+
+		fprintf(stream, "\tpackage_index: %d\n",
+			upkg->imports[i].package_index);
+
+		fprintf(stream, "\tobject_name: [%d]: %s\n",
+			upkg->imports[i].object_name,
+			upkg->names[upkg->imports[i].object_name].name);
+
 		fprintf(stream, "\n");
 	}
 
@@ -412,10 +432,20 @@ static void upkg_print_members(upackage_t *upkg, FILE *stream)
 	for (i = 0; i < upkg->num_exports; i++)
 	{
 		fprintf(stream, "exports[%d]\n", i);
-		fprintf(stream, "\tclass_index: %d\n", upkg->exports[i].class_index);
-		fprintf(stream, "\tsuper_index: %d\n", upkg->exports[i].super_index);
-		fprintf(stream, "\tpackage_index: %d\n", upkg->exports[i].package_index);
-		fprintf(stream, "\tobject_name: [%d] %s\n", upkg->exports[i].object_name, upkg->names[upkg->exports[i].object_name].name);
+
+		fprintf(stream, "\tclass_index: %d\n",
+			upkg->exports[i].class_index);
+
+		fprintf(stream, "\tsuper_index: %d\n",
+			upkg->exports[i].super_index);
+
+		fprintf(stream, "\tpackage_index: %d\n",
+			upkg->exports[i].package_index);
+
+		fprintf(stream, "\tobject_name: [%d] %s\n",
+			upkg->exports[i].object_name,
+			upkg->names[upkg->exports[i].object_name].name);
+
 		fprintf(stream, "\tobject_flags: %u\n", upkg->exports[i].object_flags);
 		fprintf(stream, "\tlen_serial: %d\n", upkg->exports[i].len_serial);
 		fprintf(stream, "\tofs_serial: %u\n", upkg->exports[i].ofs_serial);
@@ -427,38 +457,41 @@ static void upkg_print_members(upackage_t *upkg, FILE *stream)
  * reading data from objects contained in a package
  */
 
-/* works like fread, except relative to the export object specified with export_index */
-static size_t upkg_fread(void *dest, size_t size, size_t n, upackage_t *upkg, int export_index)
+/* works like fread, except relative to the export object specified with i */
+static size_t upkg_fread(void *d, size_t s, size_t n, upackage_t *upkg, int i)
 {
+	int pos;
+
 	if (!upkg->fhandle) return -1;
-	if (export_index >= upkg->num_exports) return -2;
-	if ((size * n) > upkg->exports[export_index].len_serial) return -3;
+	if (i >= upkg->num_exports) return -2;
+	if ((s * n) > upkg->exports[i].len_serial) return -3;
 
 	/* seek to position in file handle */
-	fseek(upkg->fhandle, upkg->exports[export_index].ofs_serial + upkg->exports[export_index].pos, SEEK_SET);
+	pos = upkg->exports[i].ofs_serial + upkg->exports[i].pos;
+	fseek(upkg->fhandle, pos, SEEK_SET);
 
 	/* do an fread */
-	return fread(dest, size, n, upkg->fhandle);
+	return fread(d, s, n, upkg->fhandle);
 }
 
-/* works like fseek, except relative to the export object specified with export_index */
-static int upkg_fseek(long offset, int whence, upackage_t *upkg, int export_index)
+/* works like fseek, except relative to the export object specified with i */
+static int upkg_fseek(long offset, int whence, upackage_t *upkg, int i)
 {
 	if (!upkg->fhandle) return -1;
-	if (export_index >= upkg->num_exports) return -2;
+	if (i >= upkg->num_exports) return -2;
 
 	switch (whence)
 	{
 		case SEEK_SET:
-			upkg->exports[export_index].pos = offset;
+			upkg->exports[i].pos = offset;
 			break;
 
 		case SEEK_CUR:
-			upkg->exports[export_index].pos += offset;
+			upkg->exports[i].pos += offset;
 			break;
 
 		case SEEK_END:
-			upkg->exports[export_index].pos = upkg->exports[export_index].len_serial + offset;
+			upkg->exports[i].pos = upkg->exports[i].len_serial + offset;
 			break;
 
 		default:
@@ -466,19 +499,19 @@ static int upkg_fseek(long offset, int whence, upackage_t *upkg, int export_inde
 	}
 
 	/* error checking */
-	if (upkg->exports[export_index].pos > upkg->exports[export_index].len_serial)
-		upkg->exports[export_index].pos = upkg->exports[export_index].len_serial;
+	if (upkg->exports[i].pos > upkg->exports[i].len_serial)
+		upkg->exports[i].pos = upkg->exports[i].len_serial;
 
-	if (upkg->exports[export_index].pos < 0)
-		upkg->exports[export_index].pos = 0;
+	if (upkg->exports[i].pos < 0)
+		upkg->exports[i].pos = 0;
 
 	return 0;
 }
 
-/* works like ftell, except relative to the export object specified with export_index */
-static long upkg_ftell(upackage_t *upkg, int export_index)
+/* works like ftell, except relative to the export object specified with i */
+static long upkg_ftell(upackage_t *upkg, int i)
 {
-	return upkg->exports[export_index].pos;
+	return upkg->exports[i].pos;
 }
 
 #ifdef __cplusplus
