@@ -32,9 +32,11 @@
 ##
 ## authors: erysdren
 ##
-## last modified: january 9 2023
+## last modified: january 10 2023
 ##
 ##=========================================
+
+CFLAGS += -std=c89 -pedantic -g
 
 all: example
 
