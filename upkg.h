@@ -40,6 +40,10 @@
 #ifndef __LIBUPKG_H__
 #define __LIBUPKG_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //=========================================
 //
 // the headers
@@ -485,5 +489,9 @@ static long upkg_ftell(upackage_t *upkg, int export_index)
 {
 	return upkg->exports[export_index].pos;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // __LIBUPKG_H__
