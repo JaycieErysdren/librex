@@ -1,0 +1,22 @@
+# applications
+example1
+example1.exe
+
+# unversioned files
+local/
+
+# vscode
+.vscode/
+*.code-workspace
+
+# cmake
+cmake-build-*/
+
+# meson
+meson-build-*/
+
+# make
+make-build-*/
+
+# python
+__pycache__/
