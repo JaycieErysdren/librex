@@ -1,6 +1,6 @@
 # libupkg
 
-A single-header C99 library for reading Unreal Engine 1 package files. It's in very early stages at the moment. Please consult `example.c` for usage.
+A single-header C99 library for reading Unreal Engine 1 package files. It's in very early stages at the moment. Please consult `example1.c` for usage.
 
 ## Building
 
