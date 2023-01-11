@@ -1,14 +1,14 @@
-/* *****************************************************************************
+/* ****************************************************************************
  *
  * MIT License
  *
  * Copyright (c) 2023 erysdren
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
@@ -18,11 +18,11 @@
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
  *
- * ************************************************************************** */
+ * ************************************************************************* */
 
 /* *************************************
  *
@@ -32,7 +32,7 @@
  *
  * authors: erysdren
  *
- * last modified: january 10 2023
+ * last modified: january 11 2023
  *
  * ********************************** */
 
@@ -61,6 +61,23 @@ extern "C" {
  * the types
  *
  * ********************************** */
+
+/* libupkg return values */
+typedef enum upkg_ret
+{
+	UPKG_SUCCESS = 0,
+	UPKG_COULDNT_OPEN_FILE = -1,
+	UPKG_UNSUPPORTED_TAG = -2,
+	UPKG_UNSUPPORTED_VERSION = -3,
+	UPKG_INDEX_OUT_OF_RANGE = -4,
+	UPKG_INVALID_FILE_HANDLE = -5,
+	UPKG_TOO_MANY_BYTES_REQUESTED = -6,
+	UPKG_ALLOC_FAILED = -7,
+	UPKG_FOPEN_FAILED = -8,
+	UPKG_FSEEK_FAILED = -9,
+	UPKG_FREAD_FAILED = -10,
+	UPKG_FTELL_FAILED = -11,
+} upkg_ret;
 
 /* ugeneration */
 typedef struct ugeneration_t
@@ -139,6 +156,7 @@ static void upkg_print_members(upackage_t *upkg, FILE *stream);
 static size_t upkg_fread(void *d, size_t s, size_t n, upackage_t *upkg, int i);
 static int upkg_fseek(long offset, int whence, upackage_t *upkg, int i);
 static long upkg_ftell(upackage_t *upkg, int i);
+static long upkg_fsize(upackage_t *upkg, int i);
 
 /* *************************************
  *
@@ -159,6 +177,13 @@ static upackage_t *upkg_open(const char *filename)
 
 	/* allocate struct */
 	upkg = (upackage_t *)calloc(1, sizeof(upackage_t));
+
+	/* alloc failed */
+	if (upkg == NULL)
+	{
+		upkg_close(upkg);
+		return NULL;
+	}
 
 	/* open file handle */
 	upkg->fhandle = fopen(filename, "rb");
@@ -462,9 +487,13 @@ static size_t upkg_fread(void *d, size_t s, size_t n, upackage_t *upkg, int i)
 {
 	int pos;
 
-	if (!upkg->fhandle) return -1;
-	if (i >= upkg->num_exports) return -2;
-	if ((s * n) > upkg->exports[i].len_serial) return -3;
+	/* error checking */
+	if (!upkg->fhandle)
+		return UPKG_INVALID_FILE_HANDLE;
+	if (i >= upkg->num_exports)
+		return UPKG_INDEX_OUT_OF_RANGE;
+	if ((s * n) > upkg->exports[i].len_serial)
+		return UPKG_TOO_MANY_BYTES_REQUESTED;
 
 	/* seek to position in file handle */
 	pos = upkg->exports[i].ofs_serial + upkg->exports[i].pos;
@@ -477,8 +506,11 @@ static size_t upkg_fread(void *d, size_t s, size_t n, upackage_t *upkg, int i)
 /* works like fseek, except relative to the export object specified with i */
 static int upkg_fseek(long offset, int whence, upackage_t *upkg, int i)
 {
-	if (!upkg->fhandle) return -1;
-	if (i >= upkg->num_exports) return -2;
+	/* error checking */
+	if (!upkg->fhandle)
+		return UPKG_INVALID_FILE_HANDLE;
+	if (i >= upkg->num_exports)
+		return UPKG_INDEX_OUT_OF_RANGE;
 
 	switch (whence)
 	{
@@ -511,7 +543,25 @@ static int upkg_fseek(long offset, int whence, upackage_t *upkg, int i)
 /* works like ftell, except relative to the export object specified with i */
 static long upkg_ftell(upackage_t *upkg, int i)
 {
+	/* error checking */
+	if (!upkg->fhandle)
+		return UPKG_INVALID_FILE_HANDLE;
+	if (i >= upkg->num_exports)
+		return UPKG_INDEX_OUT_OF_RANGE;
+
 	return upkg->exports[i].pos;
+}
+
+/* returns the size (in bytes) of the export object specified with i */
+static long upkg_fsize(upackage_t *upkg, int i)
+{
+	/* error checking */
+	if (!upkg->fhandle)
+		return UPKG_INVALID_FILE_HANDLE;
+	if (i >= upkg->num_exports)
+		return UPKG_INDEX_OUT_OF_RANGE;
+
+	return upkg->exports[i].len_serial;
 }
 
 #ifdef __cplusplus
