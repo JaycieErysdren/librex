@@ -32,16 +32,16 @@
 ##
 ## authors: erysdren
 ##
-## last modified: january 10 2023
+## last modified: january 13 2023
 ##
 ##=========================================
 
 CFLAGS += -std=c89 -pedantic -Wall -g
 
-all: example
+all: example1
 
-example: example1.c upkg.h
+example1: example1.c upkg.h
 	$(CC) $(CFLAGS) -o example1 example1.c -I.
 
 clean:
-	$(RM) example1 example1.o
+	$(RM) example1 example1 example1.o

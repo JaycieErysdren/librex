@@ -41,7 +41,7 @@
 int main(int argc, char **argv)
 {
 	/* variables */
-	upackage_t *upkg;
+	upkg_t *upkg;
 
 	/* if no args specified */
 	if (argc < 2)

@@ -1,6 +1,9 @@
-# applications
+# applications (linux)
 example1
-example1.exe
+
+# build artifacts
+*.o
+*.exe
 
 # unversioned files
 local/

@@ -36,10 +36,17 @@
  *
  * ********************************** */
 
+/* header guard */
 #pragma once
 #ifndef __LIBUPKG_H__
 #define __LIBUPKG_H__
 
+/* malloc */
+#ifndef LIBUPKG_MALLOC
+#define LIBUPKG_MALLOC(s) malloc(s)
+#endif
+
+/* cpp guard */
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -76,7 +83,7 @@ typedef enum upkg_ret
 	UPKG_FOPEN_FAILED = -8,
 	UPKG_FSEEK_FAILED = -9,
 	UPKG_FREAD_FAILED = -10,
-	UPKG_FTELL_FAILED = -11,
+	UPKG_FTELL_FAILED = -11
 } upkg_ret;
 
 /* ugeneration */
@@ -117,7 +124,7 @@ typedef struct uimport_t
 } uimport_t;
 
 /* upackage */
-typedef struct upackage_t
+typedef struct upkg_t
 {
 	uint32_t tag;
 	uint16_t format_version;
@@ -135,8 +142,8 @@ typedef struct upackage_t
 	uname_t *names;
 	uexport_t *exports;
 	uimport_t *imports;
-	FILE *fhandle;
-} upackage_t;
+	FILE *handle;
+} upkg_t;
 
 /* *************************************
  *
@@ -145,18 +152,18 @@ typedef struct upackage_t
  * ********************************** */
 
 /* opening and closing upackages */
-static upackage_t *upkg_open(const char *filename);
-static void upkg_close(upackage_t *upkg);
+static upkg_t *upkg_open(const char *filename);
+static void upkg_close(upkg_t *upkg);
 
 /* utility functions */
 static int32_t upkg_read_compact_index(FILE *stream);
-static void upkg_print_members(upackage_t *upkg, FILE *stream);
+static void upkg_print_members(upkg_t *upkg, FILE *stream);
 
 /* reading data from objects contained in a package */
-static size_t upkg_fread(void *d, size_t s, size_t n, upackage_t *upkg, int i);
-static int upkg_fseek(long offset, int whence, upackage_t *upkg, int i);
-static long upkg_ftell(upackage_t *upkg, int i);
-static long upkg_fsize(upackage_t *upkg, int i);
+static size_t upkg_fread(void *d, size_t s, size_t n, upkg_t *upkg, int i);
+static int upkg_fseek(long offset, int whence, upkg_t *upkg, int i);
+static long upkg_ftell(upkg_t *upkg, int i);
+static long upkg_fsize(upkg_t *upkg, int i);
 
 /* *************************************
  *
@@ -168,15 +175,120 @@ static long upkg_fsize(upackage_t *upkg, int i);
  * opening and closing upackages
  */
 
-/* read upackage file and return a upackage struct */
-static upackage_t *upkg_open(const char *filename)
+/* failed attempt at mempool stuff */
+static upkg_t *upkg_open_new(const char *filename)
 {
 	/* variables */
 	int i;
-	upackage_t *upkg;
+	uint8_t u8;
+	upkg_t *upkg;
+	upkg_t utemp;
+	FILE *ftemp;
+	size_t alloc_size;
+	size_t ptr_ofs;
+	char buf[256];
+
+	/* open temporary file handle */
+	ftemp = fopen(filename, "rb");
+	if (!ftemp) return NULL;
+
+	/* read in temporary struct so we know how much memory to allocate */
+	memset(&utemp, '\0', sizeof(upkg_t));
+	fread(&utemp, offsetof(upkg_t, generations), 1, ftemp);
+
+	/* start adding up the memory we need to alloc */
+	alloc_size = sizeof(upkg_t);
+	alloc_size += sizeof(ugeneration_t) * utemp.num_generations;
+	alloc_size += sizeof(uname_t) * utemp.num_names;
+	alloc_size += sizeof(uexport_t) * utemp.num_exports;
+	alloc_size += sizeof(uimport_t) * utemp.num_imports;
+
+	/* ...read through all names so we know how much memory to alloc... */
+	fseek(ftemp, utemp.ofs_names, SEEK_SET);
+	for (i = 0; i < utemp.num_names; i++)
+	{
+		fread(&u8, sizeof(uint8_t), 1, ftemp);
+		alloc_size += u8;
+		fseek(ftemp, u8 + sizeof(uint32_t), SEEK_CUR);
+	}
+
+	/* align our alloc_size to 4 bytes */
+	alloc_size += alloc_size % 4;
+
+	/* finally alloc our struct! */
+	upkg = (upkg_t *)LIBUPKG_MALLOC(alloc_size);
+	memset(upkg, '\0', alloc_size);
+
+	/* memcpy our data instead of reading it again */
+	memcpy(upkg, &utemp, offsetof(upkg_t, generations));
+
+	/* copy handle */
+	upkg->handle = ftemp;
+
+	/* set the pointers */
+	ptr_ofs = sizeof(upkg_t);
+	upkg->generations = (ugeneration_t *)(upkg + ptr_ofs);
+
+	ptr_ofs += sizeof(ugeneration_t) * upkg->num_generations;
+	upkg->names = (uname_t *)(upkg + ptr_ofs);
+
+	ptr_ofs += sizeof(uname_t) * upkg->num_names;
+	upkg->exports = (uexport_t *)(upkg + ptr_ofs);
+
+	ptr_ofs += sizeof(uexport_t) * upkg->num_exports;
+	upkg->imports = (uimport_t *)(upkg + ptr_ofs);
+
+	ptr_ofs += sizeof(uimport_t) * upkg->num_imports;
+
+	/* read in generations */
+	fseek(upkg->handle, offsetof(upkg_t, generations), SEEK_SET);
+	fread(upkg->generations, sizeof(ugeneration_t),
+			upkg->num_generations, upkg->handle);
+
+	/* read in exports */
+	fseek(upkg->handle, upkg->ofs_exports, SEEK_SET);
+	for (i = 0; i < upkg->num_exports; i++)
+	{
+		upkg->exports[i].class_index = upkg_read_compact_index(upkg->handle);
+		upkg->exports[i].super_index = upkg_read_compact_index(upkg->handle);
+		fread(&upkg->exports[i].package_index, sizeof(int32_t), 1, upkg->handle);
+		upkg->exports[i].object_name = upkg_read_compact_index(upkg->handle);
+		fread(&upkg->exports[i].object_flags, sizeof(uint32_t), 1, upkg->handle);
+		upkg->exports[i].len_serial = upkg_read_compact_index(upkg->handle);
+
+		if (upkg->exports[i].len_serial > 0)
+			upkg->exports[i].ofs_serial = upkg_read_compact_index(upkg->handle);
+	}
+
+	/* read in imports */
+	fseek(upkg->handle, upkg->ofs_imports, SEEK_SET);
+	for (i = 0; i < upkg->num_imports; i++)
+	{
+		upkg->imports[i].class_package = upkg_read_compact_index(upkg->handle);
+		upkg->imports[i].class_name = upkg_read_compact_index(upkg->handle);
+		fread(&upkg->imports[i].package_index, sizeof(int32_t), 1, upkg->handle);
+		upkg->imports[i].object_name = upkg_read_compact_index(upkg->handle);
+	}
+
+	/* REMOVEME: temp stuff */
+	printf("num_names: %d\n", upkg->num_names);
+	printf("num_generations: %d\n", upkg->num_generations);
+	printf("num_exports: %d\n", upkg->num_exports);
+	printf("num_imports: %d\n", upkg->num_imports);
+	printf("alloc_size: %lu\n", alloc_size);
+
+	return upkg;
+}
+
+/* read upackage file and return a upackage struct */
+static upkg_t *upkg_open(const char *filename)
+{
+	/* variables */
+	int i;
+	upkg_t *upkg;
 
 	/* allocate struct */
-	upkg = (upackage_t *)calloc(1, sizeof(upackage_t));
+	upkg = (upkg_t *)calloc(1, sizeof(upkg_t));
 
 	/* alloc failed */
 	if (upkg == NULL)
@@ -186,15 +298,15 @@ static upackage_t *upkg_open(const char *filename)
 	}
 
 	/* open file handle */
-	upkg->fhandle = fopen(filename, "rb");
-	if (upkg->fhandle == NULL)
+	upkg->handle = fopen(filename, "rb");
+	if (upkg->handle == NULL)
 	{
 		upkg_close(upkg);
 		return NULL;
 	}
 
 	/* read in header */
-	fread(upkg, offsetof(upackage_t, generations), 1, upkg->fhandle);
+	fread(upkg, offsetof(upkg_t, generations), 1, upkg->handle);
 
 	/* check if tag is correct */
 	if (upkg->tag != 2653586369)
@@ -207,50 +319,50 @@ static upackage_t *upkg_open(const char *filename)
 	upkg->generations = (ugeneration_t *)calloc(upkg->num_generations, sizeof(ugeneration_t));
 
 	/* read in generations */
-	fread(upkg->generations, sizeof(ugeneration_t), upkg->num_generations, upkg->fhandle);
+	fread(upkg->generations, sizeof(ugeneration_t), upkg->num_generations, upkg->handle);
 
 	/* allocate names */
 	upkg->names = (uname_t *)calloc(upkg->num_names, sizeof(uname_t));
 
 	/* read in names */
-	fseek(upkg->fhandle, upkg->ofs_names, SEEK_SET);
+	fseek(upkg->handle, upkg->ofs_names, SEEK_SET);
 	for (i = 0; i < upkg->num_names; i++)
 	{
-		fread(&upkg->names[i].len_name, sizeof(uint8_t), 1, upkg->fhandle);
+		fread(&upkg->names[i].len_name, sizeof(uint8_t), 1, upkg->handle);
 		upkg->names[i].name = (char *)calloc(upkg->names[i].len_name, sizeof(char));
-		fread(upkg->names[i].name, sizeof(char), upkg->names[i].len_name, upkg->fhandle);
-		fread(&upkg->names[i].flags, sizeof(uint32_t), 1, upkg->fhandle);
+		fread(upkg->names[i].name, sizeof(char), upkg->names[i].len_name, upkg->handle);
+		fread(&upkg->names[i].flags, sizeof(uint32_t), 1, upkg->handle);
 	}
 
 	/* allocate imports */
 	upkg->imports = (uimport_t *)calloc(upkg->num_imports, sizeof(uimport_t));
 
 	/* read in imports */
-	fseek(upkg->fhandle, upkg->ofs_imports, SEEK_SET);
+	fseek(upkg->handle, upkg->ofs_imports, SEEK_SET);
 	for (i = 0; i < upkg->num_imports; i++)
 	{
-		upkg->imports[i].class_package = upkg_read_compact_index(upkg->fhandle);
-		upkg->imports[i].class_name = upkg_read_compact_index(upkg->fhandle);
-		fread(&upkg->imports[i].package_index, sizeof(int32_t), 1, upkg->fhandle);
-		upkg->imports[i].object_name = upkg_read_compact_index(upkg->fhandle);
+		upkg->imports[i].class_package = upkg_read_compact_index(upkg->handle);
+		upkg->imports[i].class_name = upkg_read_compact_index(upkg->handle);
+		fread(&upkg->imports[i].package_index, sizeof(int32_t), 1, upkg->handle);
+		upkg->imports[i].object_name = upkg_read_compact_index(upkg->handle);
 	}
 
 	/* allocate exports */
 	upkg->exports = (uexport_t *)calloc(upkg->num_exports, sizeof(uexport_t));
 
 	/* read in exports */
-	fseek(upkg->fhandle, upkg->ofs_exports, SEEK_SET);
+	fseek(upkg->handle, upkg->ofs_exports, SEEK_SET);
 	for (i = 0; i < upkg->num_exports; i++)
 	{
-		upkg->exports[i].class_index = upkg_read_compact_index(upkg->fhandle);
-		upkg->exports[i].super_index = upkg_read_compact_index(upkg->fhandle);
-		fread(&upkg->exports[i].package_index, sizeof(int32_t), 1, upkg->fhandle);
-		upkg->exports[i].object_name = upkg_read_compact_index(upkg->fhandle);
-		fread(&upkg->exports[i].object_flags, sizeof(uint32_t), 1, upkg->fhandle);
-		upkg->exports[i].len_serial = upkg_read_compact_index(upkg->fhandle);
+		upkg->exports[i].class_index = upkg_read_compact_index(upkg->handle);
+		upkg->exports[i].super_index = upkg_read_compact_index(upkg->handle);
+		fread(&upkg->exports[i].package_index, sizeof(int32_t), 1, upkg->handle);
+		upkg->exports[i].object_name = upkg_read_compact_index(upkg->handle);
+		fread(&upkg->exports[i].object_flags, sizeof(uint32_t), 1, upkg->handle);
+		upkg->exports[i].len_serial = upkg_read_compact_index(upkg->handle);
 
 		if (upkg->exports[i].len_serial > 0)
-			upkg->exports[i].ofs_serial = upkg_read_compact_index(upkg->fhandle);
+			upkg->exports[i].ofs_serial = upkg_read_compact_index(upkg->handle);
 
 		upkg->exports[i].pos = 0;
 	}
@@ -259,7 +371,7 @@ static upackage_t *upkg_open(const char *filename)
 }
 
 /* free all memory associated with a upackage struct */
-static void upkg_close(upackage_t *upkg)
+static void upkg_close(upkg_t *upkg)
 {
 	int i;
 
@@ -285,8 +397,8 @@ static void upkg_close(upackage_t *upkg)
 		if (upkg->imports)
 			free(upkg->imports);
 
-		if (upkg->fhandle)
-			fclose(upkg->fhandle);
+		if (upkg->handle)
+			fclose(upkg->handle);
 
 		free(upkg);
 	}
@@ -365,7 +477,7 @@ static int32_t upkg_read_compact_index(FILE *stream)
 }
 
 /* print all members of a upackage */
-static void upkg_print_members(upackage_t *upkg, FILE *stream)
+static void upkg_print_members(upkg_t *upkg, FILE *stream)
 {
 	int i;
 
@@ -483,12 +595,12 @@ static void upkg_print_members(upackage_t *upkg, FILE *stream)
  */
 
 /* works like fread, except relative to the export object specified with i */
-static size_t upkg_fread(void *d, size_t s, size_t n, upackage_t *upkg, int i)
+static size_t upkg_fread(void *d, size_t s, size_t n, upkg_t *upkg, int i)
 {
 	int pos;
 
 	/* error checking */
-	if (!upkg->fhandle)
+	if (!upkg->handle)
 		return UPKG_INVALID_FILE_HANDLE;
 	if (i >= upkg->num_exports)
 		return UPKG_INDEX_OUT_OF_RANGE;
@@ -497,17 +609,17 @@ static size_t upkg_fread(void *d, size_t s, size_t n, upackage_t *upkg, int i)
 
 	/* seek to position in file handle */
 	pos = upkg->exports[i].ofs_serial + upkg->exports[i].pos;
-	fseek(upkg->fhandle, pos, SEEK_SET);
+	fseek(upkg->handle, pos, SEEK_SET);
 
 	/* do an fread */
-	return fread(d, s, n, upkg->fhandle);
+	return fread(d, s, n, upkg->handle);
 }
 
 /* works like fseek, except relative to the export object specified with i */
-static int upkg_fseek(long offset, int whence, upackage_t *upkg, int i)
+static int upkg_fseek(long offset, int whence, upkg_t *upkg, int i)
 {
 	/* error checking */
-	if (!upkg->fhandle)
+	if (!upkg->handle)
 		return UPKG_INVALID_FILE_HANDLE;
 	if (i >= upkg->num_exports)
 		return UPKG_INDEX_OUT_OF_RANGE;
@@ -541,10 +653,10 @@ static int upkg_fseek(long offset, int whence, upackage_t *upkg, int i)
 }
 
 /* works like ftell, except relative to the export object specified with i */
-static long upkg_ftell(upackage_t *upkg, int i)
+static long upkg_ftell(upkg_t *upkg, int i)
 {
 	/* error checking */
-	if (!upkg->fhandle)
+	if (!upkg->handle)
 		return UPKG_INVALID_FILE_HANDLE;
 	if (i >= upkg->num_exports)
 		return UPKG_INDEX_OUT_OF_RANGE;
@@ -553,10 +665,10 @@ static long upkg_ftell(upackage_t *upkg, int i)
 }
 
 /* returns the size (in bytes) of the export object specified with i */
-static long upkg_fsize(upackage_t *upkg, int i)
+static long upkg_fsize(upkg_t *upkg, int i)
 {
 	/* error checking */
-	if (!upkg->fhandle)
+	if (!upkg->handle)
 		return UPKG_INVALID_FILE_HANDLE;
 	if (i >= upkg->num_exports)
 		return UPKG_INDEX_OUT_OF_RANGE;
