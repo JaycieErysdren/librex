@@ -2,6 +2,20 @@
 
 A collection of single-header C89 libraries to enhance your C programming experience.
 
+## Directory
+
+| Name			| Description												|
+|---------------|-----------------------------------------------------------|
+| rexstd.h 		| Include file for stdlib headers.							|
+| rexint.h 		| Integer types.											|
+| rexfloat.h 	| Floating-point types and operations.						|
+| rexfixed.h 	| Fixed-point types and operations.							|
+| rexscalar.h 	| Interop between floating-point and fixed-point.			|
+| rexmem.h 		| Basic memory pool implementation.							|
+| rexstring.h 	| Small but powerful string library.						|
+| rexcolor.h 	| RGB565 + RGBA8888 + ARGB8888 conversions.					|
+| rexbase64.h 	| Base64 encoding and decoding of strings.					|
+
 ## Building
 
 Navigate to the repository directory and type `make` in the terminal to build the test applications.
