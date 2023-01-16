@@ -68,7 +68,7 @@ typedef struct string_t
 /* creation and destruction of strings */
 static string_t string_create(const char *txt);
 static string_t string_createf(const char *fmt, ...);
-static string_t string_alloc(int len);
+static string_t string_alloc(size_t len);
 static int string_free(string_t *s);
 static string_t string_duplicate(string_t *s);
 
@@ -82,7 +82,7 @@ static int string_pad(string_t *s, int pos, int n, int c);
 static int string_insert(string_t *src, string_t *dst, int pos);
 static int string_concat(string_t *src, string_t *dst);
 static int string_clear(string_t *s, int c);
-static int string_resize(string_t *s, int len);
+static int string_resize(string_t *s, size_t len);
 static int string_replace(string_t *s, int f, int r);
 
 /* utility functions */
@@ -175,7 +175,7 @@ static int string_free(string_t *s)
 }
 
 /* allocate a string of a specified length */
-static string_t string_alloc(int len)
+static string_t string_alloc(size_t len)
 {
 	/* variables */
 	string_t ret;
@@ -198,7 +198,7 @@ static string_t string_alloc(int len)
 }
 
 /* resize string to new length while preserving contents */
-static int string_resize(string_t *s, int len)
+static int string_resize(string_t *s, size_t len)
 {
 	/* sanity checks */
 	assert(s && len > 1);

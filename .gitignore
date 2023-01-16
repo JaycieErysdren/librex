@@ -4,6 +4,7 @@ rexcolor
 rexmem
 rexstr
 rexupkg
+rexbase64
 
 # build artifacts
 *.o

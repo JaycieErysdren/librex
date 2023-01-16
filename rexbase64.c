@@ -28,46 +28,48 @@
  *
  * project: librex
  *
- * file: rex.h
+ * file: rexbase64.c
  *
  * authors: erysdren
  *
- * last modified: january 15 2023
+ * last modified: january 16 2023
  *
  * ********************************** */
 
-/* header guard */
-#pragma once
-#ifndef __LIBREX_H__
-#define __LIBREX_H__
+/* rex */
+#include "rex.h"
 
-/* cpp guard */
-#ifdef __cplusplus
-extern "C" {
-#endif
+int main(int argc, char **argv)
+{
+	/* variables */
+	string_t source, encoded, decoded;
 
-/* *************************************
- *
- * the headers
- *
- * ********************************** */
+	/* allocate strings */
+	source = string_create("this is a string");
+	decoded = string_alloc(64);
 
-/* rex: core */
-#include "rexstd.h"
-#include "rexint.h"
-#include "rexfloat.h"
-#include "rexfixed.h"
-#include "rexscalar.h"
-#include "rexmem.h"
-#include "rexstr.h"
-#include "rexcolor.h"
-#include "rexbase64.h"
+	/* encode base64 */
+	encoded = base64_encode_string(&source);
 
-/* rex: format i/o */
-#include "rexupkg.h"
+	/* decode base64 */
+	decoded = base64_decode_string(&encoded);
 
-#ifdef __cplusplus
+	/* print results */
+	printf("source: ");
+	string_print(&source);
+	printf("\n");
+	printf("encoded: ");
+	string_print(&encoded);
+	printf("\n");
+	printf("decoded: ");
+	string_print(&decoded);
+	printf("\n");
+
+	/* free memory */
+	string_free(&source);
+	string_free(&decoded);
+	string_free(&encoded);
+
+	/* exit gracefully */
+	return EXIT_SUCCESS;
 }
-#endif
-
-#endif /* __LIBREX_H__ */
