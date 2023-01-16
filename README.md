@@ -1,10 +1,10 @@
-# libupkg
+# librex
 
-A single-header C89 library for reading Unreal Engine 1 package files. It's in very early stages at the moment. Please consult `example1.c` for usage.
+A collection of single-header C89 libraries to enhance your C programming experience.
 
 ## Building
 
-Navigate to the repository directory and type `make` in the terminal to build the example application.
+Navigate to the repository directory and type `make` in the terminal to build the test applications.
 
 ## License
 

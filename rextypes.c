@@ -26,44 +26,45 @@
 
 /* *************************************
  *
- * project: libupkg
+ * project: librex
  *
- * file: example1.c
+ * file: rextypes.c
  *
  * authors: erysdren
  *
- * last modified: january 11 2023
+ * last modified: january 15 2023
  *
  * ********************************** */
 
-#include "upkg.h"
+/* std */
+#include <stdio.h>
+#include <stdlib.h>
+
+/* rex */
+#include "rextypes.h"
 
 int main(int argc, char **argv)
 {
 	/* variables */
-	upkg_t *upkg;
+	scalar t1, t2, t3, t4, t5, t6, t7;
 
-	/* if no args specified */
-	if (argc < 2)
-	{
-		fprintf(stderr, "error: no file specified\n");
-		return EXIT_FAILURE;
-	}
+	/* set values */
+	t1 = SCALAR(2.5f);
+	t2 = SCALAR(8.0f);
+	t3 = SCALAR_MUL(t2, t1);
+	t4 = SCALAR_DIV(t2, t1);
+	t5 = SCALAR_FLOOR(t1);
+	t6 = SCALAR_CEIL(t1);
+	t7 = SCALAR_ROUND(t1);
 
-	/* open upkg */
-	upkg = upkg_open(argv[1]);
-
-	if (upkg == NULL)
-	{
-		fprintf(stderr, "error: couldn't parse upackage file\n");
-		return EXIT_FAILURE;
-	}
-
-	/* print member details */
-	upkg_print_members(upkg, stdout);
-
-	/* close upkg */
-	upkg_close(upkg);
+	/* print results */
+	printf("t1: %0.4f\n", SCALAR_TO_FLOAT32(t1));
+	printf("t2: %0.4f\n", SCALAR_TO_FLOAT32(t2));
+	printf("t2 * t1: %0.4f\n", SCALAR_TO_FLOAT32(t3));
+	printf("t2 / t1: %0.4f\n", SCALAR_TO_FLOAT32(t4));
+	printf("floor(t1): %0.4f\n", SCALAR_TO_FLOAT32(t5));
+	printf("ceil(t1): %0.4f\n", SCALAR_TO_FLOAT32(t6));
+	printf("round(t1): %0.4f\n", SCALAR_TO_FLOAT32(t7));
 
 	/* exit gracefully */
 	return EXIT_SUCCESS;

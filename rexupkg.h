@@ -26,13 +26,13 @@
 
 /* *************************************
  *
- * project: libupkg
+ * project: librex
  *
- * file: upkg.h
+ * file: rexupkg.h
  *
  * authors: erysdren
  *
- * last modified: january 11 2023
+ * last modified: january 16 2023
  *
  * ********************************** */
 

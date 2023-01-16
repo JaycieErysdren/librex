@@ -26,22 +26,34 @@
 
 ##=========================================
 ##
-## project: libupkg
+## project: librex
 ##
 ## file: makefile
 ##
 ## authors: erysdren
 ##
-## last modified: january 13 2023
+## last modified: january 16 2023
 ##
 ##=========================================
 
-CFLAGS += -std=c89 -pedantic -Wall -g
+CFLAGS += -std=c89 -pedantic -Wall -g -Wno-unused-function
 
-all: example1
+all: rextypes rexcolor rexmem rexstr rexupkg
 
-example1: example1.c upkg.h
-	$(CC) $(CFLAGS) -o example1 example1.c -I.
+rextypes:
+	$(CC) $(CFLAGS) -o rextypes rextypes.c -I.
+
+rexcolor:
+	$(CC) $(CFLAGS) -o rexcolor rexcolor.c -I.
+
+rexmem:
+	$(CC) $(CFLAGS) -o rexmem rexmem.c -I.
+
+rexstr:
+	$(CC) $(CFLAGS) -o rexstr rexstr.c -I.
+
+rexupkg:
+	$(CC) $(CFLAGS) -o rexupkg rexupkg.c -I.
 
 clean:
-	$(RM) example1 example1 example1.o
+	$(RM) rextypes rexcolor rexmem rexstr

@@ -1,5 +1,9 @@
 # applications (linux)
-example1
+rextypes
+rexcolor
+rexmem
+rexstr
+rexupkg
 
 # build artifacts
 *.o
