@@ -163,7 +163,7 @@ static upkg_t *upkg_open(const char *filename)
 	fread(upkg, offsetof(upkg_t, generations), 1, upkg->handle);
 
 	/* check if tag is correct */
-	if (upkg->tag != 2653586369)
+	if (upkg->tag != 2653586369UL)
 	{
 		upkg_close(upkg);
 		return NULL;
