@@ -142,8 +142,7 @@ uint8 unpack_argb8888_alpha(uint32 c);
 /* set color type to index8, and set value */
 void color_set_index8(color *c, uint8 i)
 {
-	if (!c) return;
-
+	assert(c);
 	c->tag = INDEX8;
 	c->val.u8 = i;
 }
@@ -151,8 +150,7 @@ void color_set_index8(color *c, uint8 i)
 /* set color type to rgb565, and set value */
 void color_set_rgb565(color *c, uint8 r, uint8 g, uint8 b)
 {
-	if (!c) return;
-
+	assert(c);
 	c->tag = RGB565;
 	c->val.u16 = pack_rgb565(r, g, b);
 }
@@ -160,8 +158,7 @@ void color_set_rgb565(color *c, uint8 r, uint8 g, uint8 b)
 /* set color type to rgba8888, and set value */
 void color_set_rgba8888(color *c, uint8 r, uint8 g, uint8 b, uint8 a)
 {
-	if (!c) return;
-
+	assert(c);
 	c->tag = RGBA8888;
 	c->val.u32 = pack_rgba8888(r, g, b, a);
 }
@@ -169,8 +166,7 @@ void color_set_rgba8888(color *c, uint8 r, uint8 g, uint8 b, uint8 a)
 /* set color type to argb8888, and set value */
 void color_set_argb8888(color *c, uint8 r, uint8 g, uint8 b, uint8 a)
 {
-	if (!c) return;
-
+	assert(c);
 	c->tag = ARGB8888;
 	c->val.u32 = pack_argb8888(r, g, b, a);
 }
@@ -182,14 +178,14 @@ void color_set_argb8888(color *c, uint8 r, uint8 g, uint8 b, uint8 a)
 /* retrieve index of 8-bit color */
 uint8 color_get_index8(color *c)
 {
-	if (!c) return 0;
+	assert(c);
 	return (c->tag == INDEX8) ? c->val.u8 : 0;
 }
 
 /* retrieve red color component */
 uint8 color_get_red(color *c)
 {
-	if (!c) return 0;
+	assert(c);
 	switch (c->tag)
 	{
 		case RGB565: 
@@ -206,7 +202,7 @@ uint8 color_get_red(color *c)
 /* retrieve green color component */
 uint8 color_get_green(color *c)
 {
-	if (!c) return 0;
+	assert(c);
 	switch (c->tag)
 	{
 		case RGB565: 
@@ -223,7 +219,7 @@ uint8 color_get_green(color *c)
 /* retrieve blue color component */
 uint8 color_get_blue(color *c)
 {
-	if (!c) return 0;
+	assert(c);
 	switch (c->tag)
 	{
 		case RGB565: 
@@ -240,7 +236,7 @@ uint8 color_get_blue(color *c)
 /* retrieve alpha color component */
 uint8 color_get_alpha(color *c)
 {
-	if (!c) return 0;
+	assert(c);
 	switch (c->tag)
 	{
 		case RGBA8888: 
@@ -255,7 +251,7 @@ uint8 color_get_alpha(color *c)
 /* retrieve color components as floats */
 float32 color_get_redf(color *c)
 {
-	if (!c) return 0;
+	assert(c);
 	switch (c->tag)
 	{
 		case RGB565: 
@@ -271,7 +267,7 @@ float32 color_get_redf(color *c)
 
 float32 color_get_greenf(color *c)
 {
-	if (!c) return 0;
+	assert(c);
 	switch (c->tag)
 	{
 		case RGB565: 
@@ -287,7 +283,7 @@ float32 color_get_greenf(color *c)
 
 float32 color_get_bluef(color *c)
 {
-	if (!c) return 0;
+	assert(c);
 	switch (c->tag)
 	{
 		case RGB565: 
@@ -303,7 +299,7 @@ float32 color_get_bluef(color *c)
 
 float32 color_get_alphaf(color *c)
 {
-	if (!c) return 0;
+	assert(c);
 	switch (c->tag)
 	{
 		case RGBA8888: 

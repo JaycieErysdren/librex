@@ -125,7 +125,7 @@ void mempool_free(mempool *mp, void *ptr);
 void mempool_createpool(mempool *mp, size_t size, size_t min_alloc)
 {
 	/* sanity checks */
-	if (!mp) return;
+	assert(mp);
 
 	/* set values */
 	mp->num_blocks = size;
@@ -143,7 +143,7 @@ void mempool_createpool(mempool *mp, size_t size, size_t min_alloc)
 void mempool_freepool(mempool *mp)
 {
 	/* sanity check */
-	if (!mp) return;
+	assert(mp);
 
 	/* free memory */
 	if (mp->blocks) LIBREX_FREE(mp->blocks);
@@ -160,7 +160,7 @@ void *mempool_alloc(mempool *mp, size_t size)
 	void *ret;
 
 	/* sanity check */
-	if (!mp) return NULL;
+	assert(mp);
 
 	/* set return value to current free pointer */
 	ret = (void *)mp->next_free;
@@ -176,7 +176,7 @@ void *mempool_alloc(mempool *mp, size_t size)
 void mempool_free(mempool *mp, void *ptr)
 {
 	/* sanity check */
-	if (!mp || !ptr) return;
+	assert(mp && ptr);
 }
 
 #ifdef __cplusplus

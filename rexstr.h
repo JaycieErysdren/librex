@@ -63,11 +63,11 @@ extern "C" {
  * ********************************** */
 
 /* string type */
-typedef struct string
+typedef struct string_t
 {
 	size_t len;
 	char *buf;
-} string;
+} string_t;
 
 /* *************************************
  *
@@ -76,38 +76,38 @@ typedef struct string
  * ********************************** */
 
 /* creation and destruction of strings */
-static string string_create(const char *txt);
-static string string_createf(const char *fmt, ...);
-static string string_alloc(int len);
-static int string_free(string *s);
-static string string_duplicate(string *s);
+static string_t string_create(const char *txt);
+static string_t string_createf(const char *fmt, ...);
+static string_t string_alloc(int len);
+static int string_free(string_t *s);
+static string_t string_duplicate(string_t *s);
 
 /* string modification */
-static int string_set(string *s, const char *txt);
-static int string_setf(string *s, const char *fmt, ...);
-static int string_setc(string *s, int i, int c);
-static int string_copy(string *src, string *dst);
-static int string_slice(string *src, string *dst, int pos, int n);
-static int string_pad(string *s, int pos, int n, int c);
-static int string_insert(string *src, string *dst, int pos);
-static int string_concat(string *src, string *dst);
-static int string_clear(string *s, int c);
-static int string_resize(string *s, int len);
-static int string_replace(string *s, int f, int r);
+static int string_set(string_t *s, const char *txt);
+static int string_setf(string_t *s, const char *fmt, ...);
+static int string_setc(string_t *s, int i, int c);
+static int string_copy(string_t *src, string_t *dst);
+static int string_slice(string_t *src, string_t *dst, int pos, int n);
+static int string_pad(string_t *s, int pos, int n, int c);
+static int string_insert(string_t *src, string_t *dst, int pos);
+static int string_concat(string_t *src, string_t *dst);
+static int string_clear(string_t *s, int c);
+static int string_resize(string_t *s, int len);
+static int string_replace(string_t *s, int f, int r);
 
 /* utility functions */
-static int string_print(string *s);
-static int string_fprint(string *s, FILE *stream, librex_putf putf);
-static int string_getc(string *s, int i);
-static int string_reads(string *s, FILE *stream, int n, int t);
-static int string_readc(string *s, FILE *stream, int n);
-static int string_compare(string *s1, string *s2);
-static int string_search(string *s, const char *search);
+static int string_print(string_t *s);
+static int string_fprint(string_t *s, FILE *stream, librex_putf putf);
+static int string_getc(string_t *s, int i);
+static int string_reads(string_t *s, FILE *stream, int n, int t);
+static int string_readc(string_t *s, FILE *stream, int n);
+static int string_compare(string_t *s1, string_t *s2);
+static int string_search(string_t *s, const char *search);
 
 /* string conversion functions */
-static int string_to_int(string *s);
-static long string_to_long(string *s);
-static double string_to_double(string *s);
+static int string_to_int(string_t *s);
+static long string_to_long(string_t *s);
+static double string_to_double(string_t *s);
 
 /* *************************************
  *
@@ -120,15 +120,15 @@ static double string_to_double(string *s);
  */
 
 /* create new string with text input */
-static string string_create(const char *txt)
+static string_t string_create(const char *txt)
 {
 	/* variables */
-	string ret;
+	string_t ret;
 
 	/* sanity check */
 	assert(txt);
 
-	/* allocate string */
+	/* allocate string_t */
 	ret = string_alloc(strlen(txt));
 
 	/* set text buffer */
@@ -139,10 +139,10 @@ static string string_create(const char *txt)
 }
 
 /* create new string with formatted input */
-static string string_createf(const char *fmt, ...)
+static string_t string_createf(const char *fmt, ...)
 {
 	/* variables */
-	string ret;
+	string_t ret;
 	va_list args;
 	char buf[256];
 
@@ -157,7 +157,7 @@ static string string_createf(const char *fmt, ...)
 	vsprintf(buf, fmt, args);
 	va_end(args);
 
-	/* allocate string */
+	/* allocate string_t */
 	ret = string_alloc(strlen(buf));
 
 	/* set text buffer */
@@ -168,13 +168,13 @@ static string string_createf(const char *fmt, ...)
 }
 
 /* free string buffer */
-static int string_free(string *s)
+static int string_free(string_t *s)
 {
 	/* free memory if string exists */
 	if (s && s->buf)
 	{
 		/* free buffer */
-		free(s->buf);
+		LIBREX_FREE(s->buf);
 
 		/* return success */
 		return 1;
@@ -185,30 +185,30 @@ static int string_free(string *s)
 }
 
 /* allocate a string of a specified length */
-static string string_alloc(int len)
+static string_t string_alloc(int len)
 {
 	/* variables */
-	string str;
+	string_t ret;
 	size_t alloc_size;
 
 	/* sanity check */
 	assert(len > 1);
 
 	/* set values */
-	str.len = len;
+	ret.len = len;
 
 	/* allocate memory */
-	alloc_size = sizeof(char) * str.len;
-	str.buf = (char *)LIBREX_MALLOC(alloc_size);
-	assert(str.buf);
-	memset(str.buf, '\0', alloc_size);
+	alloc_size = sizeof(char) * ret.len;
+	ret.buf = (char *)LIBREX_MALLOC(alloc_size);
+	assert(ret.buf);
+	memset(ret.buf, '\0', alloc_size);
 
 	/* return pointer */
-	return str;
+	return ret;
 }
 
 /* resize string to new length while preserving contents */
-static int string_resize(string *s, int len)
+static int string_resize(string_t *s, int len)
 {
 	/* sanity checks */
 	assert(s && len > 1);
@@ -230,7 +230,7 @@ static int string_resize(string *s, int len)
 }
 
 /* if f is found in the string, replace with r */
-static int string_replace(string *s, int f, int r)
+static int string_replace(string_t *s, int f, int r)
 {
 	/* variables */
 	int i;
@@ -260,8 +260,8 @@ static int string_replace(string *s, int f, int r)
  * string modification
  */
 
-/* set the string to the given unformatted string */
-static int string_set(string *s, const char *txt)
+/* set the string to the given unformatted string_t */
+static int string_set(string_t *s, const char *txt)
 {
 	/* sanity checks */
 	if (!s || !s->buf || !txt) return 0;
@@ -277,8 +277,8 @@ static int string_set(string *s, const char *txt)
 	return 1;
 }
 
-/* print formatted text into existing string */
-static int string_setf(string *s, const char *fmt, ...)
+/* print formatted text into existing string_t */
+static int string_setf(string_t *s, const char *fmt, ...)
 {
 	/* variables */
 	va_list args;
@@ -306,16 +306,16 @@ static int string_setf(string *s, const char *fmt, ...)
 	return 1;
 }
 
-/* duplicate string and return pointer to copied string */
-static string string_duplicate(string *s)
+/* duplicate string and return pointer to copied string_t */
+static string_t string_duplicate(string_t *s)
 {
 	/* variables */
-	string ret;
+	string_t ret;
 
 	/* sanity checks */
 	assert(s);
 
-	/* allocate new string */
+	/* allocate new string_t */
 	ret = string_alloc(s->len);
 
 	/* copy src to ret */
@@ -326,7 +326,7 @@ static string string_duplicate(string *s)
 }
 
 /* copy string from src to dst */
-static int string_copy(string *src, string *dst)
+static int string_copy(string_t *src, string_t *dst)
 {
 	/* sanity checks */
 	if (!src || !dst) return 0;
@@ -343,13 +343,13 @@ static int string_copy(string *src, string *dst)
 }
 
 /* slice a portion of string src and place it in dst */
-static int string_slice(string *src, string *dst, int pos, int n)
+static int string_slice(string_t *src, string_t *dst, int pos, int n)
 {
 	/* sanity checks */
 	if (!src || !dst || pos < 1 || n < 1) return 0;
 	if (pos + n > src->len || n > dst->len) return 0;
 
-	/* clear dest string */
+	/* clear dest string_t */
 	string_clear(dst, '\0');
 
 	/* memcpy the string buffer */
@@ -360,12 +360,12 @@ static int string_slice(string *src, string *dst, int pos, int n)
 }
 
 /* add len bytes of padding with pad char at pos */
-static int string_pad(string *s, int pos, int n, int c)
+static int string_pad(string_t *s, int pos, int n, int c)
 {
 	/* sanity checks */
 	if (!s || n < 1 || pos < 1 || pos >= s->len) return 0;
 
-	/* resize string */
+	/* resize string_t */
 	string_resize(s, s->len + n);
 	if (!s) return 0;
 
@@ -378,12 +378,12 @@ static int string_pad(string *s, int pos, int n, int c)
 }
 
 /* insert src into dst at the specified pos */
-static int string_insert(string *src, string *dst, int pos)
+static int string_insert(string_t *src, string_t *dst, int pos)
 {
 	/* sanity checks */
 	if (!src || !dst || pos < 1 || pos >= dst->len) return 0;
 
-	/* resize string */
+	/* resize string_t */
 	string_resize(dst, dst->len + src->len);
 	if (!dst) return 0;
 
@@ -396,7 +396,7 @@ static int string_insert(string *src, string *dst, int pos)
 }
 
 /* create a string which is the concat of two other strings */
-static int string_concat(string *src, string *dst)
+static int string_concat(string_t *src, string_t *dst)
 {
 	/* sanity checks */
 	if (!src || !dst) return 0;
@@ -413,7 +413,7 @@ static int string_concat(string *src, string *dst)
 }
 
 /* replace the whole string with the specificed char */
-static int string_clear(string *s, int c)
+static int string_clear(string_t *s, int c)
 {
 	/* sanity checks */
 	if (!s || !s->buf) return 0;
@@ -426,7 +426,7 @@ static int string_clear(string *s, int c)
 }
 
 /* replace the whole string with the specificed char */
-static int string_setc(string *s, int i, int c)
+static int string_setc(string_t *s, int i, int c)
 {
 	/* sanity checks */
 	if (!s || !s->buf || i >= s->len) return 0;
@@ -443,14 +443,14 @@ static int string_setc(string *s, int i, int c)
  */
 
 /* print string to stdout */
-static int string_print(string *s)
+static int string_print(string_t *s)
 {
 	/* call the complex func with default values */
 	return string_fprint(s, stdout, fputc);
 }
 
 /* print string object to specified stream, with more user control */
-static int string_fprint(string *s, FILE *stream, librex_putf putf)
+static int string_fprint(string_t *s, FILE *stream, librex_putf putf)
 {
 	/* variables */
 	int i;
@@ -469,7 +469,7 @@ static int string_fprint(string *s, FILE *stream, librex_putf putf)
 }
 
 /* get char from specified index */
-static int string_getc(string *s, int i)
+static int string_getc(string_t *s, int i)
 {
 	/* sanity checks */
 	if (!s || i >= s->len) return -1;
@@ -479,7 +479,7 @@ static int string_getc(string *s, int i)
 }
 
 /* read n chars from stream */
-static int string_readc(string *s, FILE *stream, int n)
+static int string_readc(string_t *s, FILE *stream, int n)
 {
 	/* variables */
 	int i;
@@ -487,7 +487,7 @@ static int string_readc(string *s, FILE *stream, int n)
 	/* sanity checks */
 	if (!s || n < 1 || n > s->len || !stream) return 0;
 
-	/* clear string */
+	/* clear string_t */
 	string_clear(s, '\0');
 	if (!s) return 0;
 
@@ -502,7 +502,7 @@ static int string_readc(string *s, FILE *stream, int n)
 }
 
 /* read t-terminated chars from stream, up to n */
-static int string_reads(string *s, FILE *stream, int n, int t)
+static int string_reads(string_t *s, FILE *stream, int n, int t)
 {
 	/* variables */
 	int i;
@@ -511,7 +511,7 @@ static int string_reads(string *s, FILE *stream, int n, int t)
 	if (!s || !s->buf || n < 1 || n > s->len || t < 0 || !stream)
 		return 0;
 
-	/* clear string */
+	/* clear string_t */
 	string_clear(s, '\0');
 	if (!s) return 0;
 
@@ -529,7 +529,7 @@ static int string_reads(string *s, FILE *stream, int n, int t)
 }
 
 /* compare two strings. returns 1 if they're the same, 0 if not */
-static int string_compare(string *s1, string *s2)
+static int string_compare(string_t *s1, string_t *s2)
 {
 	/* variables */
 	int i;
@@ -553,7 +553,7 @@ static int string_compare(string *s1, string *s2)
 /* search inside a string for the supplied character sequence */
 /* returns negative number on failure, otherwise returns the */
 /* position where the search string was found */
-static int string_search(string *s, const char *search)
+static int string_search(string_t *s, const char *search)
 {
 	/* variables */
 	int ret;
@@ -571,7 +571,7 @@ static int string_search(string *s, const char *search)
 		/* if buf[i] equals search[0], loop through and compare */
 		if (s->buf[i] == search[0])
 		{
-			/* loop through the length of the search string */
+			/* loop through the length of the search string_t */
 			for (n = 0; n < strlen(search); n++)
 			{
 				/* if anything is different, break */
@@ -597,7 +597,7 @@ static int string_search(string *s, const char *search)
  */
 
 /* convert string to int */
-static signed int string_to_int(string *s)
+static signed int string_to_int(string_t *s)
 {
 	/* sanity check */
 	if (!s || !s->buf) return 0;
@@ -607,7 +607,7 @@ static signed int string_to_int(string *s)
 }
 
 /* convert string to long */
-static long string_to_long(string *s)
+static long string_to_long(string_t *s)
 {
 	/* sanity check */
 	if (!s || !s->buf) return 0;
@@ -617,7 +617,7 @@ static long string_to_long(string *s)
 }
 
 /* convert string to double */
-static double string_to_double(string *s)
+static double string_to_double(string_t *s)
 {
 	/* sanity check */
 	if (!s || !s->buf) return 0;

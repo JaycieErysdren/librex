@@ -56,4 +56,4 @@ rexupkg:
 	$(CC) $(CFLAGS) -o rexupkg rexupkg.c -I.
 
 clean:
-	$(RM) rextypes rexcolor rexmem rexstr
+	$(RM) rextypes rexcolor rexmem rexstr rexupkg

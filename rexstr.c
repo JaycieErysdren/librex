@@ -42,7 +42,7 @@
 int main(int argc, char **argv)
 {
 	/* variables */
-	string s1, s2;
+	string_t s1, s2;
 	FILE *file;
 
 	/* open a text file */
