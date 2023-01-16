@@ -37,9 +37,7 @@
  * ********************************** */
 
 /* rex */
-#include "rexstd.h"
-#include "rextypes.h"
-#include "rexmem.h"
+#include "rex.h"
 
 int main(int argc, char **argv)
 {

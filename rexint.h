@@ -28,44 +28,50 @@
  *
  * project: librex
  *
- * file: rextypes.c
+ * file: rexint.h
  *
  * authors: erysdren
  *
- * last modified: january 15 2023
+ * last modified: january 16 2023
  *
  * ********************************** */
 
-/* std */
-#include <stdio.h>
-#include <stdlib.h>
+/* header guard */
+#pragma once
+#ifndef __LIBREX_INT_H__
+#define __LIBREX_INT_H__
 
-/* rex */
-#include "rextypes.h"
+/* cpp guard */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-int main(int argc, char **argv)
-{
-	/* variables */
-	scalar t1, t2, t3, t4, t5, t6, t7;
+/* *************************************
+ *
+ * integer types
+ *
+ * ********************************** */
 
-	/* set values */
-	t1 = SCALAR(2.5f);
-	t2 = SCALAR(8.0f);
-	t3 = SCALAR_MUL(t2, t1);
-	t4 = SCALAR_DIV(t2, t1);
-	t5 = SCALAR_FLOOR(t1);
-	t6 = SCALAR_CEIL(t1);
-	t7 = SCALAR_ROUND(t1);
+/*
+ * on the use of stdint.h types here:
+ * may not be 100% portable if you're targeting
+ * pre-C99 platforms. please investigate further!
+ */
 
-	/* print results */
-	printf("t1: %0.4f\n", SCALAR_TO_FLOAT32(t1));
-	printf("t2: %0.4f\n", SCALAR_TO_FLOAT32(t2));
-	printf("t2 * t1: %0.4f\n", SCALAR_TO_FLOAT32(t3));
-	printf("t2 / t1: %0.4f\n", SCALAR_TO_FLOAT32(t4));
-	printf("floor(t1): %0.4f\n", SCALAR_TO_FLOAT32(t5));
-	printf("ceil(t1): %0.4f\n", SCALAR_TO_FLOAT32(t6));
-	printf("round(t1): %0.4f\n", SCALAR_TO_FLOAT32(t7));
+typedef int8_t int8;				/* 8-bit signed int */
+typedef uint8_t uint8;				/* 8-bit unsigned int */
 
-	/* exit gracefully */
-	return EXIT_SUCCESS;
+typedef int16_t int16;				/* 16-bit signed int */
+typedef uint16_t uint16;			/* 16-bit unsigned int */
+
+typedef int32_t int32;				/* 32-bit signed int */
+typedef uint32_t uint32;			/* 32-bit unsigned int */
+
+typedef int64_t int64;				/* 64-bit signed int */
+typedef uint64_t uint64;			/* 64-bit unsigned int */
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* __LIBREX_INT_H__ */

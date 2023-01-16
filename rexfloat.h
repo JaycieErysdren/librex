@@ -28,7 +28,7 @@
  *
  * project: librex
  *
- * file: rexupkg.c
+ * file: rexfloat.h
  *
  * authors: erysdren
  *
@@ -36,36 +36,47 @@
  *
  * ********************************** */
 
-/* rex */
-#include "rex.h"
+/* header guard */
+#pragma once
+#ifndef __LIBREX_FLOAT_H__
+#define __LIBREX_FLOAT_H__
 
-int main(int argc, char **argv)
-{
-	/* variables */
-	upkg_t *upkg;
+/* cpp guard */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-	/* if no args specified */
-	if (argc < 2)
-	{
-		fprintf(stderr, "error: no file specified\n");
-		return EXIT_FAILURE;
-	}
+/* *************************************
+ *
+ * floating point types
+ *
+ * ********************************** */
 
-	/* open upkg */
-	upkg = upkg_open(argv[1]);
+typedef float float32;				/* 32-bit float */
+typedef double float64;				/* 64-bit float */
 
-	if (upkg == NULL)
-	{
-		fprintf(stderr, "error: couldn't parse upackage file\n");
-		return EXIT_FAILURE;
-	}
+/* 32-bit float static initialization macros */
+#define FLOAT32(a) ((float32)(a))
+#define FLOAT64(a) ((float64)(a))
 
-	/* print member details */
-	upkg_print_members(upkg, stdout);
+/* 32-bit float math macros */
+#define FLOAT32_MUL(a, b) ((a) * (b))
+#define FLOAT32_DIV(a, b) ((a) / (b))
+#define FLOAT32_FLOOR(a) ((int32)(a))
+#define FLOAT32_CEIL(a) ((int32)(a) == (a) ? (a) : (int32)((a) + 1))
+#define FLOAT32_FRAC(a) ((a) - (int32)(a))
+#define FLOAT32_ROUND(a) ((int32)((a) < 0 ? (a) - 0.5 : (a) + 0.5))
 
-	/* close upkg */
-	upkg_close(upkg);
+/* 64-bit float math macros */
+#define FLOAT64_MUL(a, b) ((a) * (b))
+#define FLOAT64_DIV(a, b) ((a) / (b))
+#define FLOAT64_FLOOR(a) ((int32)(a))
+#define FLOAT64_CEIL(a) ((int32)(a) == (a) ? (a) : (int32)((a) + 1))
+#define FLOAT64_FRAC(a) ((a) - (int32)(a))
+#define FLOAT64_ROUND(a) ((int32)((a) < 0 ? (a) - 0.5 : (a) + 0.5))
 
-	/* exit gracefully */
-	return EXIT_SUCCESS;
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* __LIBREX_FLOAT_H__ */

@@ -38,10 +38,10 @@
 
 CFLAGS += -std=c89 -pedantic -Wall -g -Wno-unused-function
 
-all: rextypes rexcolor rexmem rexstr rexupkg
+all: rexscalar rexcolor rexmem rexstr rexupkg
 
-rextypes:
-	$(CC) $(CFLAGS) -o rextypes rextypes.c -I.
+rexscalar:
+	$(CC) $(CFLAGS) -o rexscalar rexscalar.c -I.
 
 rexcolor:
 	$(CC) $(CFLAGS) -o rexcolor rexcolor.c -I.
@@ -56,4 +56,4 @@ rexupkg:
 	$(CC) $(CFLAGS) -o rexupkg rexupkg.c -I.
 
 clean:
-	$(RM) rextypes rexcolor rexmem rexstr rexupkg
+	$(RM) rexscalar rexcolor rexmem rexstr rexupkg

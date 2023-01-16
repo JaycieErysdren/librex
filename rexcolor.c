@@ -36,13 +36,8 @@
  *
  * ********************************** */
 
-/* std */
-#include <stdio.h>
-#include <stdlib.h>
-
 /* rex */
-#include "rextypes.h"
-#include "rexcolor.h"
+#include "rex.h"
 
 int main(int argc, char **argv)
 {

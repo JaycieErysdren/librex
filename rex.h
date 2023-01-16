@@ -28,44 +28,45 @@
  *
  * project: librex
  *
- * file: rexupkg.c
+ * file: rex.h
  *
  * authors: erysdren
  *
- * last modified: january 16 2023
+ * last modified: january 15 2023
  *
  * ********************************** */
 
-/* rex */
-#include "rex.h"
+/* header guard */
+#pragma once
+#ifndef __LIBREX_H__
+#define __LIBREX_H__
 
-int main(int argc, char **argv)
-{
-	/* variables */
-	upkg_t *upkg;
+/* cpp guard */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-	/* if no args specified */
-	if (argc < 2)
-	{
-		fprintf(stderr, "error: no file specified\n");
-		return EXIT_FAILURE;
-	}
+/* *************************************
+ *
+ * the headers
+ *
+ * ********************************** */
 
-	/* open upkg */
-	upkg = upkg_open(argv[1]);
+/* rex: core */
+#include "rexstd.h"
+#include "rexint.h"
+#include "rexfloat.h"
+#include "rexfixed.h"
+#include "rexscalar.h"
+#include "rexmem.h"
+#include "rexstr.h"
+#include "rexcolor.h"
 
-	if (upkg == NULL)
-	{
-		fprintf(stderr, "error: couldn't parse upackage file\n");
-		return EXIT_FAILURE;
-	}
+/* rex: format i/o */
+#include "rexupkg.h"
 
-	/* print member details */
-	upkg_print_members(upkg, stdout);
-
-	/* close upkg */
-	upkg_close(upkg);
-
-	/* exit gracefully */
-	return EXIT_SUCCESS;
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* __LIBREX_H__ */

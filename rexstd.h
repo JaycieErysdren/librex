@@ -69,7 +69,25 @@ extern "C" {
  *
  * ********************************** */
 
+/* pi */
+#ifndef PI
+#define PI 3.14159265358979323846
+#endif
 
+/* return whatever value is lower */
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
+/* return whatever value is higher */
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+
+/* clamp value to min and max */
+#define CLAMP(a, min, max) MIN(MAX(a, min), max)
+
+/* return absolute value */
+#define ABS(a) (((a) < 0) ? -(a) : (a))
+
+/* return sign */
+#define SGN(a) (((a) < 0) ? -1 : (((a) > 0) ? 1 : 0))
 
 /* *************************************
  *
