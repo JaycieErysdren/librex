@@ -46,7 +46,6 @@ int main(int argc, char **argv)
 
 	/* allocate strings */
 	source = string_create("this is a string");
-	decoded = string_alloc(64);
 
 	/* encode base64 */
 	encoded = base64_encode_string(&source);
