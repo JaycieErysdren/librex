@@ -2,7 +2,7 @@
 rexscalar
 rexcolor
 rexmem
-rexstr
+rexstring
 rexupkg
 rexbase64
 

@@ -28,7 +28,7 @@
  *
  * project: librex
  *
- * file: rexstr.h
+ * file: rexstring.h
  *
  * authors: erysdren
  *
@@ -38,8 +38,8 @@
 
 /* header guard */
 #pragma once
-#ifndef __LIBREX_STR_H__
-#define __LIBREX_STR_H__
+#ifndef __LIBREX_STRING_H__
+#define __LIBREX_STRING_H__
 
 /* cpp guard */
 #ifdef __cplusplus
@@ -620,4 +620,4 @@ static double string_to_double(string_t *s)
 }
 #endif
 
-#endif /* __LIBREX_STR_H__ */
+#endif /* __LIBREX_STRING_H__ */

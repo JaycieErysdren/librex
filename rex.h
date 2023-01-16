@@ -59,7 +59,7 @@ extern "C" {
 #include "rexfixed.h"
 #include "rexscalar.h"
 #include "rexmem.h"
-#include "rexstr.h"
+#include "rexstring.h"
 #include "rexcolor.h"
 #include "rexbase64.h"
 

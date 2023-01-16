@@ -70,10 +70,10 @@ typedef double float64;				/* 64-bit float */
 /* 64-bit float math macros */
 #define FLOAT64_MUL(a, b) ((a) * (b))
 #define FLOAT64_DIV(a, b) ((a) / (b))
-#define FLOAT64_FLOOR(a) ((int32)(a))
-#define FLOAT64_CEIL(a) ((int32)(a) == (a) ? (a) : (int32)((a) + 1))
-#define FLOAT64_FRAC(a) ((a) - (int32)(a))
-#define FLOAT64_ROUND(a) ((int32)((a) < 0 ? (a) - 0.5 : (a) + 0.5))
+#define FLOAT64_FLOOR(a) ((int64)(a))
+#define FLOAT64_CEIL(a) ((int64)(a) == (a) ? (a) : (int64)((a) + 1))
+#define FLOAT64_FRAC(a) ((a) - (int64)(a))
+#define FLOAT64_ROUND(a) ((int64)((a) < 0 ? (a) - 0.5 : (a) + 0.5))
 
 #ifdef __cplusplus
 }

@@ -71,18 +71,18 @@ const int base64_invs[] = {
  * ********************************** */
 
 /* encoding and decoding char sequences */
-char *base64_encode(const char *in, size_t len);
-int base64_decode(const char *in, char *out, size_t outlen);
+static char *base64_encode(const char *in, size_t len);
+static int base64_decode(const char *in, char *out, size_t outlen);
 
 /* encoding and decoding strings */
-string_t base64_encode_string(string_t *src);
-string_t base64_decode_string(string_t *src);
+static string_t base64_encode_string(string_t *src);
+static string_t base64_decode_string(string_t *src);
 
 /* utility functions */
-size_t base64_encoded_size(size_t in);
-size_t base64_decoded_size(const char *in);
-void base64_generate_decode_table();
-int base64_is_valid_char(char c);
+static size_t base64_encoded_size(size_t in);
+static size_t base64_decoded_size(const char *in);
+static void base64_generate_decode_table();
+static int base64_is_valid_char(char c);
 
 /* *************************************
  *
@@ -95,7 +95,7 @@ int base64_is_valid_char(char c);
  */
 
 /* encode base64 char sequence */
-char *base64_encode(const char *in, size_t len)
+static char *base64_encode(const char *in, size_t len)
 {
 	/* variables */
 	char *out;
@@ -137,7 +137,7 @@ char *base64_encode(const char *in, size_t len)
 }
 
 /* decode base64 char sequence */
-int base64_decode(const char *in, char *out, size_t outlen)
+static int base64_decode(const char *in, char *out, size_t outlen)
 {
 	/* variables */
 	size_t len;
@@ -185,7 +185,7 @@ int base64_decode(const char *in, char *out, size_t outlen)
  */
 
 /* returns new allocated base64 string encoded from src */
-string_t base64_encode_string(string_t *src)
+static string_t base64_encode_string(string_t *src)
 {
 	/* variables */
 	string_t ret;
@@ -224,7 +224,7 @@ string_t base64_encode_string(string_t *src)
 }
 
 /* returns new allocated string base64 decoded from src */
-string_t base64_decode_string(string_t *src)
+static string_t base64_decode_string(string_t *src)
 {
 	/* variables */
 	string_t ret;
@@ -275,7 +275,7 @@ string_t base64_decode_string(string_t *src)
  */
 
 /* get the length of a string after it's been base64 encoded */
-size_t base64_encoded_size(size_t in)
+static size_t base64_encoded_size(size_t in)
 {
 	/* variables */
 	size_t ret;
@@ -293,7 +293,7 @@ size_t base64_encoded_size(size_t in)
 }
 
 /* get the length of a base64 string after it's been decoded */
-size_t base64_decoded_size(const char *in)
+static size_t base64_decoded_size(const char *in)
 {
 	/* variables */
 	size_t len;
@@ -321,7 +321,7 @@ size_t base64_decoded_size(const char *in)
 }
 
 /* generate base64 decode table */
-void base64_generate_decode_table()
+static void base64_generate_decode_table()
 {
 	/* variables */
 	int inv[80];
@@ -338,7 +338,7 @@ void base64_generate_decode_table()
 }
 
 /* test if char is a valid base64 char */
-int base64_is_valid_char(char c)
+static int base64_is_valid_char(char c)
 {
 	if (c >= '0' && c <= '9')
 		return 1;

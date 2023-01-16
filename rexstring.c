@@ -28,7 +28,7 @@
  *
  * project: librex
  *
- * file: rexstr.c
+ * file: rexstring.c
  *
  * authors: erysdren
  *
