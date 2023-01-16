@@ -62,6 +62,7 @@ extern "C" {
 #include "rexstring.h"
 #include "rexcolor.h"
 #include "rexbase64.h"
+#include "rexbits.h"
 
 /* rex: format i/o */
 #include "rexupkg.h"

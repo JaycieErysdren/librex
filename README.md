@@ -15,6 +15,7 @@ A collection of single-header C89 libraries to enhance your C programming experi
 | rexstring.h 	| Small but powerful string library.						|
 | rexcolor.h 	| RGB565 + RGBA8888 + ARGB8888 conversions.					|
 | rexbase64.h 	| Base64 encoding and decoding of strings.					|
+| rexbits.h 	| Bit swapping between big and little endianness.			|
 
 ## Building
 
