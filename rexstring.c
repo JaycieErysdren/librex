@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 	FILE *file;
 
 	/* open a text file */
-	file = fopen("rexstr.h", "r");
+	file = fopen("rexstring.h", "r");
 	if (!file) return EXIT_FAILURE;
 
 	/* allocate string for the job */
