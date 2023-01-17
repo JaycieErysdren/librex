@@ -28,7 +28,7 @@
  *
  * project: librex
  *
- * file: rex.h
+ * file: rexdos.c
  *
  * authors: erysdren
  *
@@ -36,39 +36,14 @@
  *
  * ********************************** */
 
-/* header guard */
-#pragma once
-#ifndef __LIBREX_H__
-#define __LIBREX_H__
+/* rex */
+#include "rex.h"
 
-/* cpp guard */
-#ifdef __cplusplus
-extern "C" {
-#endif
+int main(int argc, char **argv)
+{
+	/* hi */
+	printf("hello :)\n");
 
-/* *************************************
- *
- * the headers
- *
- * ********************************** */
-
-/* rex: core */
-#include "rexstd.h"
-#include "rexint.h"
-#include "rexfloat.h"
-#include "rexfixed.h"
-#include "rexreal.h"
-#include "rexmem.h"
-#include "rexstring.h"
-#include "rexcolor.h"
-#include "rexbase64.h"
-#include "rexbits.h"
-
-/* rex: format i/o */
-#include "rexupkg.h"
-
-#ifdef __cplusplus
+	/* exit gracefully */
+	return EXIT_SUCCESS;
 }
-#endif
-
-#endif /* __LIBREX_H__ */

@@ -32,31 +32,135 @@
 ##
 ## authors: erysdren
 ##
-## last modified: january 16 2023
+## last modified: january 17 2023
 ##
 ##=========================================
 
-CFLAGS += -std=c89 -pedantic -Wall -g -Wno-unused-function
+##
+## define default variables
+##
 
-all: clean rexreal rexcolor rexmem rexstring rexupkg rexbase64
+OUT = -o
+EXE = _linux_gcc
+OBJ = .o
+LIB = .a
 
+##
+## compile mode switches
+##
+
+## debug mode
+ifdef DEBUG
+CFLAGS += -g
+endif
+
+## release mode
+ifdef RELEASE
+CFLAGS += -O2 -s
+endif
+
+## pedantic mode
+ifdef PEDANTIC
+CFLAGS += -std=c89 -pedantic -Wall
+endif
+
+## pedantic mode (lite!)
+ifdef PEDANTIC-LITE
+CFLAGS += -std=c89 -pedantic -Wall -Wno-unused-function -Wno-long-long
+endif
+
+##
+## platform target switches
+##
+
+## compile for windows with mingw
+ifdef WINDOWS_MINGW
+WINDOWS = 1
+include make/mingw.mak
+endif
+
+## compile for linux with watcom
+ifdef LINUX_WATCOM
+LINUX = 1
+include make/watcom.mak
+endif
+
+## compile for dos with watcom
+ifdef DOS_WATCOM
+DOS = 1
+include make/watcom.mak
+endif
+
+## compile for windows with watcom
+ifdef WINDOWS_WATCOM
+WINDOWS = 1
+include make/watcom.mak
+endif
+
+## compile for win386 with watcom
+ifdef WIN386_WATCOM
+WIN386 = 1
+include make/watcom.mak
+endif
+
+## compile for dos with djgpp
+ifdef DOS_DJGPP
+DOS = 1
+include make/djgpp.mak
+endif
+
+##
+## targets
+##
+
+## compile all targets
+all: clean \
+	rexreal \
+	rexcolor \
+	rexmem \
+	rexstring \
+	rexupkg \
+	rexbase64 \
+	$(if $(DOS), rexdos) \
+
+## real numbers
 rexreal:
-	$(CC) $(CFLAGS) -o rexreal rexreal.c -I.
+	$(CC) $(CFLAGS) $(OUT)rexreal$(EXE) rexreal.c -I.
+	$(if $(WIN386), $(BIND) rexreal$(EXE) -n)
 
+## rgba colors
 rexcolor:
-	$(CC) $(CFLAGS) -o rexcolor rexcolor.c -I.
+	$(CC) $(CFLAGS) $(OUT)rexcolor$(EXE) rexcolor.c -I.
+	$(if $(WIN386), $(BIND) rexcolor$(EXE) -n)
 
+## memory management
 rexmem:
-	$(CC) $(CFLAGS) -o rexmem rexmem.c -I.
+	$(CC) $(CFLAGS) $(OUT)rexmem$(EXE) rexmem.c -I.
+	$(if $(WIN386), $(BIND) rexmem$(EXE) -n)
 
+## string management
 rexstring:
-	$(CC) $(CFLAGS) -o rexstring rexstring.c -I.
+	$(CC) $(CFLAGS) $(OUT)rexstring$(EXE) rexstring.c -I.
+	$(if $(WIN386), $(BIND) rexstring$(EXE) -n)
 
+## unreal 1 package format
 rexupkg:
-	$(CC) $(CFLAGS) -o rexupkg rexupkg.c -I.
+	$(CC) $(CFLAGS) $(OUT)rexupkg$(EXE) rexupkg.c -I.
+	$(if $(WIN386), $(BIND) rexupkg$(EXE) -n)
 
+## base64 encoding
 rexbase64:
-	$(CC) $(CFLAGS) -o rexbase64 rexbase64.c -I.
+	$(CC) $(CFLAGS) $(OUT)rexbase64$(EXE) rexbase64.c -I.
+	$(if $(WIN386), $(BIND) rexbase64$(EXE) -n)
 
+## dos platform i/o
+rexdos:
+	$(CC) $(CFLAGS) $(OUT)rexdos$(EXE) rexdos.c -I.
+	$(if $(WIN386), $(BIND) rexdos$(EXE) -n)
+
+## clean
 clean:
-	$(RM) rexreal rexcolor rexmem rexstring rexupkg rexbase64
+	$(RM) *_linux_gcc
+	$(RM) *_linux_watcom
+	$(RM) *.exe *.obj *.o *.err *.rex
+	$(RM) *.EXE *.OBJ *.O *.ERR *.REX

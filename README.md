@@ -16,10 +16,28 @@ A collection of single-header C89 libraries to enhance your C programming experi
 | rexcolor.h 	| RGB565 + RGBA8888 + ARGB8888 conversions.					|
 | rexbase64.h 	| Base64 encoding and decoding of strings.					|
 | rexbits.h 	| Bit swapping between big and little endianness.			|
+| rexdos.h 		| DOS platform I/O. Supports both DJGPP and Open Watcom.	|
 
 ## Building
 
 Navigate to the repository directory and type `make` in the terminal to build the test applications.
+
+I've implemented a build system using GNU Make that supports various platform targets. Supported platforms are:
+
+- Linux via GCC (`make`)
+- Linux x86 via Watcom (`make LINUX_WATCOM=1`)
+- DOS32 via DJGPP (`make DOS_DJGPP=1`)
+- DOS32 via Watcom (`make DOS_WATCOM=1`)
+- Win32 via Watcom (`make WINDOWS_WATCOM=1`)
+- Win386 via Watcom (`make WIN386_WATCOM=1`)
+- Windows via MinGW (`make WINDOWS_MINGW=1`)
+
+There are also various switches that can be used to enable or disable compile features. Those switches are:
+
+- Debug mode (`make DEBUG=1`)
+- Release mode (`make RELEASE=1`)
+- Pedantic mode (`make PEDANTIC=1`)
+- Pedantic mode (lite!) (`make PEDANTIC-LITE=1`)
 
 ## License
 

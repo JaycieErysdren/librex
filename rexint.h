@@ -32,7 +32,7 @@
  *
  * authors: erysdren
  *
- * last modified: january 16 2023
+ * last modified: january 17 2023
  *
  * ********************************** */
 
@@ -58,6 +58,23 @@ extern "C" {
  * pre-C99 platforms. please investigate further!
  */
 
+/* djgpp with c89 std doesn't allow stdint.h */
+#ifdef __DJGPP__
+
+typedef signed char int8;			/* 8-bit signed int */
+typedef unsigned char uint8;		/* 8-bit unsigned int */
+
+typedef signed short int16;			/* 16-bit signed int */
+typedef unsigned short uint16;		/* 16-bit unsigned int */
+
+typedef signed long int32;			/* 32-bit signed int */
+typedef unsigned long uint32;		/* 32-bit unsigned int */
+
+typedef signed long long int64;		/* 64-bit signed int */
+typedef unsigned long long uint64;	/* 64-bit unsigned int */
+
+#else
+
 typedef int8_t int8;				/* 8-bit signed int */
 typedef uint8_t uint8;				/* 8-bit unsigned int */
 
@@ -69,6 +86,8 @@ typedef uint32_t uint32;			/* 32-bit unsigned int */
 
 typedef int64_t int64;				/* 64-bit signed int */
 typedef uint64_t uint64;			/* 64-bit unsigned int */
+
+#endif
 
 #ifdef __cplusplus
 }

@@ -118,8 +118,8 @@ int64 bitswap_int64(int64 *val)
 
 	assert(val);
 
-	out = ((*val << 8) & 0xFF00FF00FF00FF00) | ((*val >> 8) & 0x00FF00FF00FF00FF);
-	out = ((out << 16) & 0xFFFF0000FFFF0000) | ((out >> 16) & 0x0000FFFF0000FFFF);
+	out = ((*val << 8) & 0xFF00FF00FF00FF00ULL) | ((*val >> 8) & 0x00FF00FF00FF00FFULL);
+	out = ((out << 16) & 0xFFFF0000FFFF0000ULL) | ((out >> 16) & 0x0000FFFF0000FFFFULL);
 	*val = (out << 32) | ((out >> 32) & 0xFFFFFFFF);
 
 	return *val;
@@ -132,8 +132,8 @@ uint64 bitswap_uint64(uint64 *val)
 
 	assert(val);
 
-	out = ((*val << 8) & 0xFF00FF00FF00FF00U) | ((*val >> 8) & 0x00FF00FF00FF00FFU);
-	out = ((out << 16) & 0xFFFF0000FFFF0000U) | ((out >> 16) & 0x0000FFFF0000FFFFU);
+	out = ((*val << 8) & 0xFF00FF00FF00FF00ULL) | ((*val >> 8) & 0x00FF00FF00FF00FFULL);
+	out = ((out << 16) & 0xFFFF0000FFFF0000ULL) | ((out >> 16) & 0x0000FFFF0000FFFFULL);
 	*val = (out << 32) | (out >> 32);
 
 	return *val;
