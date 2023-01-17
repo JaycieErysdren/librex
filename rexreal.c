@@ -28,11 +28,11 @@
  *
  * project: librex
  *
- * file: rextypes.c
+ * file: rexreal.c
  *
  * authors: erysdren
  *
- * last modified: january 15 2023
+ * last modified: january 16 2023
  *
  * ********************************** */
 
@@ -42,25 +42,25 @@
 int main(int argc, char **argv)
 {
 	/* variables */
-	scalar t1, t2, t3, t4, t5, t6, t7;
+	real t1, t2, t3, t4, t5, t6, t7;
 
 	/* set values */
-	t1 = SCALAR(2.5f);
-	t2 = SCALAR(8.0f);
-	t3 = SCALAR_MUL(t2, t1);
-	t4 = SCALAR_DIV(t2, t1);
-	t5 = SCALAR_FLOOR(t1);
-	t6 = SCALAR_CEIL(t1);
-	t7 = SCALAR_ROUND(t1);
+	t1 = REAL(2.5f);
+	t2 = REAL(8.0f);
+	t3 = REAL_MUL(t2, t1);
+	t4 = REAL_DIV(t2, t1);
+	t5 = REAL_FLOOR(t1);
+	t6 = REAL_CEIL(t1);
+	t7 = REAL_ROUND(t1);
 
 	/* print results */
-	printf("t1: %0.4f\n", SCALAR_TO_FLOAT32(t1));
-	printf("t2: %0.4f\n", SCALAR_TO_FLOAT32(t2));
-	printf("t2 * t1: %0.4f\n", SCALAR_TO_FLOAT32(t3));
-	printf("t2 / t1: %0.4f\n", SCALAR_TO_FLOAT32(t4));
-	printf("floor(t1): %0.4f\n", SCALAR_TO_FLOAT32(t5));
-	printf("ceil(t1): %0.4f\n", SCALAR_TO_FLOAT32(t6));
-	printf("round(t1): %0.4f\n", SCALAR_TO_FLOAT32(t7));
+	printf("t1: %0.4f\n", REAL_TO_FLOAT32(t1));
+	printf("t2: %0.4f\n", REAL_TO_FLOAT32(t2));
+	printf("t2 * t1: %0.4f\n", REAL_TO_FLOAT32(t3));
+	printf("t2 / t1: %0.4f\n", REAL_TO_FLOAT32(t4));
+	printf("floor(t1): %0.4f\n", REAL_TO_FLOAT32(t5));
+	printf("ceil(t1): %0.4f\n", REAL_TO_FLOAT32(t6));
+	printf("round(t1): %0.4f\n", REAL_TO_FLOAT32(t7));
 
 	/* exit gracefully */
 	return EXIT_SUCCESS;

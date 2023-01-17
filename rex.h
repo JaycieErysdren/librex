@@ -57,7 +57,7 @@ extern "C" {
 #include "rexint.h"
 #include "rexfloat.h"
 #include "rexfixed.h"
-#include "rexscalar.h"
+#include "rexreal.h"
 #include "rexmem.h"
 #include "rexstring.h"
 #include "rexcolor.h"

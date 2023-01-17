@@ -10,7 +10,7 @@ A collection of single-header C89 libraries to enhance your C programming experi
 | rexint.h 		| Integer types.											|
 | rexfloat.h 	| Floating-point types and operations.						|
 | rexfixed.h 	| Fixed-point types and operations.							|
-| rexscalar.h 	| Interop between floating-point and fixed-point.			|
+| rexreal.h 	| Interop between floating-point and fixed-point.			|
 | rexmem.h 		| Basic memory pool implementation.							|
 | rexstring.h 	| Small but powerful string library.						|
 | rexcolor.h 	| RGB565 + RGBA8888 + ARGB8888 conversions.					|

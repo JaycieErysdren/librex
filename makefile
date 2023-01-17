@@ -38,10 +38,10 @@
 
 CFLAGS += -std=c89 -pedantic -Wall -g -Wno-unused-function
 
-all: rexscalar rexcolor rexmem rexstring rexupkg rexbase64
+all: rexreal rexcolor rexmem rexstring rexupkg rexbase64
 
-rexscalar:
-	$(CC) $(CFLAGS) -o rexscalar rexscalar.c -I.
+rexreal:
+	$(CC) $(CFLAGS) -o rexreal rexreal.c -I.
 
 rexcolor:
 	$(CC) $(CFLAGS) -o rexcolor rexcolor.c -I.
@@ -59,4 +59,4 @@ rexbase64:
 	$(CC) $(CFLAGS) -o rexbase64 rexbase64.c -I.
 
 clean:
-	$(RM) rexscalar rexcolor rexmem rexstring rexupkg rexbase64
+	$(RM) rexreal rexcolor rexmem rexstring rexupkg rexbase64
