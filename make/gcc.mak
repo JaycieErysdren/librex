@@ -11,6 +11,7 @@ AR = $(GCC_PREFIX)ar
 AS = $(GCC_PREFIX)as
 STRIP = $(GCC_PREFIX)strip
 EXE = _linux_gcc
+
 OUT = -o
 OBJ = .o
 LIB = .a

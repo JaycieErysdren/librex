@@ -43,6 +43,12 @@ EXE = _dos_watcom.exe
 CFLAGS = -bcl=dos32x
 endif
 
+## watcom os/2 target
+ifdef OS2
+EXE = _os2_watcom.exe
+CFLAGS = -bcl=os2v2
+endif
+
 ##
 ## mode switches
 ##

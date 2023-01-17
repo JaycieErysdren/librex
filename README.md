@@ -31,6 +31,7 @@ I've implemented a build system using GNU Make that supports various platform ta
 - Win32 via Watcom (`make WINDOWS_WATCOM=1`)
 - Win386 via Watcom (`make WIN386_WATCOM=1`)
 - Windows via MinGW (`make WINDOWS_MINGW=1`)
+- OS/2 via Watcom (`make OS2_WATCOM=1`)
 
 If no target is provided, Linux via GCC is assumed.
 

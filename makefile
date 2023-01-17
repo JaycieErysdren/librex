@@ -37,39 +37,6 @@
 ##=========================================
 
 ##
-## define default variables
-##
-
-OUT = -o
-EXE = _linux_gcc
-OBJ = .o
-LIB = .a
-
-##
-## compile mode switches
-##
-
-## debug mode
-ifdef DEBUG
-CFLAGS += -g
-endif
-
-## release mode
-ifdef RELEASE
-CFLAGS += -O2 -s
-endif
-
-## pedantic mode
-ifdef PEDANTIC
-CFLAGS += -std=c89 -pedantic -Wall
-endif
-
-## pedantic mode (lite!)
-ifdef PEDANTIC-LITE
-CFLAGS += -std=c89 -pedantic -Wall -Wno-unused-function -Wno-long-long
-endif
-
-##
 ## platform target switches
 ##
 
@@ -109,6 +76,12 @@ WIN386 = 1
 include make/watcom.mak
 endif
 
+## compile for os/2 with watcom
+ifdef OS2_WATCOM
+OS2 = 1
+include make/watcom.mak
+endif
+
 ## compile for dos with djgpp
 ifdef DOS_DJGPP
 DOS = 1
@@ -122,9 +95,11 @@ ifndef LINUX_WATCOM
 ifndef DOS_WATCOM
 ifndef WINDOWS_WATCOM
 ifndef WIN386_WATCOM
+ifndef OS2_WATCOM
 ifndef DOS_DJGPP
 LINUX = 1
 include make/gcc.mak
+endif
 endif
 endif
 endif
