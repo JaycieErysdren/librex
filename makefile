@@ -73,6 +73,12 @@ endif
 ## platform target switches
 ##
 
+## compile for linux with gcc
+ifdef LINUX_GCC
+LINUX = 1
+include make/gcc.mak
+endif
+
 ## compile for windows with mingw
 ifdef WINDOWS_MINGW
 WINDOWS = 1
@@ -107,6 +113,24 @@ endif
 ifdef DOS_DJGPP
 DOS = 1
 include make/djgpp.mak
+endif
+
+## if all else fails, just assume gcc
+ifndef LINUX_GCC
+ifndef WINDOWS_MINGW
+ifndef LINUX_WATCOM
+ifndef DOS_WATCOM
+ifndef WINDOWS_WATCOM
+ifndef WIN386_WATCOM
+ifndef DOS_DJGPP
+LINUX = 1
+include make/gcc.mak
+endif
+endif
+endif
+endif
+endif
+endif
 endif
 
 ##
