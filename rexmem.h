@@ -60,6 +60,7 @@ extern "C" {
 /* std */
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
 /* rex */
 #include "rexstd.h"
@@ -99,6 +100,12 @@ void mempool_freepool(mempool *mp);
 /* allocate and free memory from pool */
 void *mempool_alloc(mempool *mp, size_t size);
 void mempool_free(mempool *mp, void *ptr);
+
+/* helpful custom memset functions */
+void *memset8(void *s, uint8_t c, size_t n);
+void *memset16(void *s, uint16_t c, size_t n);
+void *memset32(void *s, uint32_t c, size_t n);
+void *memset64(void *s, uint64_t c, size_t n);
 
 /* *************************************
  *
@@ -166,6 +173,62 @@ void mempool_free(mempool *mp, void *ptr)
 {
 	/* sanity check */
 	assert(mp && ptr);
+}
+
+/* 
+ * helpful custom memset functions
+ */
+
+/* set n 1-byte segments of s to c */
+void *memset8(void *s, uint8_t c, size_t n)
+{
+	/* variables */
+	uint8_t *dst = (uint8_t *)s;
+
+	/* loop to set memory */
+	while (n--) *dst++ = c;
+
+	/* return pointer to memory */
+	return s;
+}
+
+/* set n 2-byte segments of s to c */
+void *memset16(void *s, uint16_t c, size_t n)
+{
+	/* variables */
+	uint16_t *dst = (uint16_t *)s;
+
+	/* loop to set memory */
+	while (n--) *dst++ = c;
+
+	/* return pointer to memory */
+	return s;
+}
+
+/* set n 4-byte segments of s to c */
+void *memset32(void *s, uint32_t c, size_t n)
+{
+	/* variables */
+	uint32_t *dst = (uint32_t *)s;
+
+	/* loop to set memory */
+	while (n--) *dst++ = c;
+
+	/* return pointer to memory */
+	return s;
+}
+
+/* set n 8-byte segments of s to c */
+void *memset64(void *s, uint64_t c, size_t n)
+{
+	/* variables */
+	uint64_t *dst = (uint64_t *)s;
+
+	/* loop to set memory */
+	while (n--) *dst++ = c;
+
+	/* return pointer to memory */
+	return s;
 }
 
 #ifdef __cplusplus

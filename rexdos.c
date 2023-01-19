@@ -47,8 +47,44 @@
 
 int main(int argc, char **argv)
 {
-	/* hi */
-	printf("hello :)\n");
+	/* set video mode to 3 (80x25 text mode) */
+	dos_set_mode(DOS_MODE_3);
+
+	/* set cursor shape */
+	dos_text_set_cursor_shape(DOS_CURSOR_BLOCK);
+
+	/* print screen rows and cols */
+	printf("this mode has %d rows and %d columns!\n",
+		dos_text_get_screen_rows(),
+		dos_text_get_screen_columns());
+	while (!getchar());
+
+	/* test clear screen */
+	printf("hello! press any key to clear the screen.\n");
+	while (!getchar());
+	dos_clear_screen();
+	printf("well, did it work?\npress any key to continue.\n");
+	while (!getchar());
+
+	/* set video mode to 13 (320x200 graphics mode) */
+	dos_set_mode(DOS_MODE_13);
+
+	/* print screen rows and cols */
+	printf("this mode has %d rows and %d columns!\n",
+		dos_text_get_screen_rows(),
+		dos_text_get_screen_columns());
+	while (!getchar());
+
+	/* test clear screen */
+	printf("hello! press any key to clear the screen.\n");
+	while (!getchar());
+	dos_clear_screen();
+	printf("well, did it work?\npress any key to continue.\n");
+	while (!getchar());
+
+	/* set video mode to 3 (80x25 text mode) */
+	dos_text_set_cursor_shape(DOS_CURSOR_LINE);
+	dos_set_mode(DOS_MODE_3);
 
 	/* exit gracefully */
 	return EXIT_SUCCESS;

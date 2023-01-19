@@ -22,31 +22,31 @@ OUT = -fe=
 ## watcom linux target
 ifdef LINUX
 EXE = _linux_watcom
-CFLAGS = -bcl=linux
+CFLAGS = -bcl=linux -I$(WATCOM_PREFIX)../lh
 endif
 
 ## watcom win nt target
 ifdef WINDOWS
 EXE = _windows_watcom.exe
-CFLAGS = -bcl=nt
+CFLAGS = -bcl=nt -I$(WATCOM_PREFIX)../h
 endif
 
 ## watcom win386 target
 ifdef WIN386
 EXE = _win386_watcom.rex
-CFLAGS = -bcl=win386
+CFLAGS = -bcl=win386 -I$(WATCOM_PREFIX)../h
 endif
 
 ## watcom dos target
 ifdef DOS
 EXE = _dos_watcom.exe
-CFLAGS = -bcl=dos32x
+CFLAGS = -bcl=dos32x -I$(WATCOM_PREFIX)../h
 endif
 
 ## watcom os/2 target
 ifdef OS2
 EXE = _os2_watcom.exe
-CFLAGS = -bcl=os2v2
+CFLAGS = -bcl=os2v2 -I$(WATCOM_PREFIX)../h
 endif
 
 ##
