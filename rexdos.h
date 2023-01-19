@@ -186,9 +186,12 @@ static int dos_text_get_screen_columns();
 static int dos_text_get_screen_rows();
 static void dos_text_get_screen_size(int *w, int *h);
 static int dos_text_get_attributes();
-static void dos_text_place_buffer(uint16_t *s, size_t n);
+static void dos_text_putb(uint16_t x, uint16_t y, uint16_t *s, size_t n);
 static void dos_text_puts(uint16_t x, uint16_t y, const char *s);
-static void dos_text_putc(uint16_t x, uint16_t y, uint16_t c);
+static void dos_text_putc(uint16_t x, uint16_t y, char c);
+#ifdef __LIBREX_STRING_H__
+static void dos_text_putstring(uint16_t x, uint16_t y, string_t *s);
+#endif
 
 /* microsoft mouse */
 static void dos_mouse_enable();
@@ -344,44 +347,53 @@ static int dos_text_get_attributes()
 }
 
 /* place n 2-byte segments from pointer s to the text memory */
-static void dos_text_place_buffer(uint16_t *s, size_t n)
+static void dos_text_putb(uint16_t x, uint16_t y, uint16_t *s, size_t n)
 {
 	/* variables */
-	size_t max = dos_text_get_screen_rows() * dos_text_get_screen_columns();
+	size_t max, rows, cols, ofs;
 
-	/* sanity check */
+	/* set variables */
+	rows = dos_text_get_screen_rows();
+	cols = dos_text_get_screen_columns();
+	max = rows * cols;
+	ofs = (y * cols + x) * sizeof(uint16_t);
+
+	/* sanity checks */
 	if (n > max) return;
-	memcpy((void *)DOS_TEXT_MEMORY, (void *)s, n * sizeof(uint16_t));
+
+	/* do copy */
+	memcpy((void *)(DOS_TEXT_MEMORY + ofs), (void *)s, n * sizeof(uint16_t));
 }
 
-/* place string s at column x, row y */
+#ifdef __LIBREX_STRING_H__
+/* place string_t s at column x, row y */
+static void dos_text_putstring(uint16_t x, uint16_t y, string_t *s)
+{
+	/* variables */
+	int i;
+
+	/* perform put loop */
+	for (i = 0; i < s->len; i++)
+		dos_text_putc(x + i, y, s->buf[i]);
+}
+#endif
+
+/* place char sequence s at column x, row y */
 static void dos_text_puts(uint16_t x, uint16_t y, const char *s)
 {
 	/* variables */
-	uint16_t ox, oy;
+	int i;
 
-	/* save old cursor pos */
-	dos_text_get_cursor_pos(&ox, &oy);
-
-	/* perform put */
-	dos_text_set_cursor_pos(x, y);
-	puts(s);
-	dos_text_set_cursor_pos(ox, oy);
+	/* perform put loop */
+	for (i = 0; i < strlen(s); i++)
+		dos_text_putc(x + i, y, s[i]);
 }
 
 /* place char c at column x, row y */
-static void dos_text_putc(uint16_t x, uint16_t y, uint16_t c)
+static void dos_text_putc(uint16_t x, uint16_t y, char c)
 {
-	/* variables */
-	uint16_t ox, oy;
-
-	/* save old cursor pos */
-	dos_text_get_cursor_pos(&ox, &oy);
-
-	/* perform put */
-	dos_text_set_cursor_pos(x, y);
-	putchar(c);
-	dos_text_set_cursor_pos(ox, oy);
+	((uint16_t *)DOS_TEXT_MEMORY)[y * dos_text_get_screen_columns() + x] = 
+		c | (dos_text_get_attributes() << 8);
 }
 
 /*

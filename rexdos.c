@@ -43,6 +43,7 @@
 #include <stdio.h>
 
 /* rex */
+#include "rexstring.h"
 #include "rexdos.h"
 
 int main(int argc, char **argv)
@@ -50,12 +51,16 @@ int main(int argc, char **argv)
 	/* variables */
 	FILE *file;
 	uint16_t *buffer;
+	string_t string1;
+
+	/* create string */
+	string1 = string_create("this is a string_t type at 6, 6.");
 
 	/* set video mode to 3 (80x25 text mode) */
 	dos_set_mode(DOS_MODE_3);
 
 	/* test placing text at position */
-	dos_text_puts(6, 6, "hello this is a string at 6, 6.");
+	dos_text_putstring(6, 6, &string1);
 
 	/* mouse cursor test */
 	printf("mouse cursor test\n");
@@ -107,8 +112,11 @@ int main(int argc, char **argv)
 	buffer = (uint16_t *)LIBREX_MALLOC(80 * 25 * sizeof(uint16_t));
 	fread(buffer, sizeof(uint16_t), 80 * 25, file);
 	fclose(file);
-	dos_text_place_buffer(buffer, 80 * 25);
+	dos_text_putb(0, 0, buffer, 80 * 25);
 	LIBREX_FREE(buffer);
+
+	/* free memory */
+	string_free(&string1);
 
 	/* exit gracefully */
 	return EXIT_SUCCESS;
