@@ -175,7 +175,7 @@ static void dos_clear_screen();
 
 /* graphics mode functions */
 static void dos_graphics_clear_screen();
-static void dos_graphics_place_buffer(uint8_t *s, size_t n);
+static void dos_graphics_putb(uint8_t *s, size_t n);
 
 /* text mode functions */
 static void dos_text_set_cursor_shape(uint16_t shape);
@@ -246,7 +246,7 @@ static void dos_graphics_clear_screen()
 }
 
 /* place n 1-byte segments from pointer s to the graphics memory */
-static void dos_graphics_place_buffer(uint8_t *s, size_t n)
+static void dos_graphics_putb(uint8_t *s, size_t n)
 {
 	/* sanity check */
 	if (n > 64000) return;
