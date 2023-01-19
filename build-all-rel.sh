@@ -32,7 +32,7 @@
 ##
 ## authors: erysdren
 ##
-## last modified: january 17 2023
+## last modified: january 18 2023
 ##
 ##=========================================
 
@@ -47,6 +47,10 @@ fi
 ## linux, gcc
 make all RELEASE=1 PEDANTIC=1 LINUX_GCC=1
 cp *_linux_gcc make-build-all-rel/
+
+## linux, clang
+make all RELEASE=1 PEDANTIC=1 LINUX_CLANG=1
+cp *_linux_clang make-build-all-rel/
 
 ## linux, watcom
 make all RELEASE=1 PEDANTIC=1 LINUX_WATCOM=1

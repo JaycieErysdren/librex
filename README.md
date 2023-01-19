@@ -25,6 +25,7 @@ Navigate to the repository directory and type `make` in the terminal to build th
 I've implemented a build system using GNU Make that supports various platform targets. Supported platforms are:
 
 - Linux via GCC (`make LINUX_GCC=1`)
+- Linux via Clang (`make LINUX_CLANG=1`)
 - Linux x86 via Watcom (`make LINUX_WATCOM=1`)
 - DOS32 via DJGPP (`make DOS_DJGPP=1`)
 - DOS32 via Watcom (`make DOS_WATCOM=1`)

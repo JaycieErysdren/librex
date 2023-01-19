@@ -5,6 +5,9 @@
 ## linux gcc applications
 *_linux_gcc
 
+## linux clang applications
+*_linux_clang
+
 ## linux watcom applications
 *_linux_watcom
 

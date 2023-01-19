@@ -48,6 +48,10 @@ fi
 make all DEBUG=1 LINUX_GCC=1
 cp *_linux_gcc make-build-all-dbg/
 
+## linux, clang
+make all DEBUG=1 LINUX_CLANG=1
+cp *_linux_clang make-build-all-dbg/
+
 ## linux, watcom
 make all DEBUG=1 LINUX_WATCOM=1
 cp *_linux_watcom make-build-all-dbg/

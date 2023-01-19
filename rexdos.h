@@ -65,8 +65,15 @@ extern "C" {
 /* if we're included outside of rex.h */
 #ifndef __LIBREX_H__
 
-#include "rexstd.h"
+/* std */
+#ifdef __DJGPP__
 #include "rexint.h"
+#else
+#include <stdint.h>
+#endif
+
+/* rex */
+#include "rexstd.h"
 
 #endif
 
@@ -112,7 +119,7 @@ extern "C" {
  *
  * ********************************** */
 
-static void dos_setvidmode(uint16 mode);
+static void dos_setvidmode(uint16_t mode);
 
 /* *************************************
  *

@@ -32,7 +32,7 @@
 ##
 ## authors: erysdren
 ##
-## last modified: january 17 2023
+## last modified: january 18 2023
 ##
 ##=========================================
 
@@ -44,6 +44,12 @@
 ifdef LINUX_GCC
 LINUX = 1
 include make/gcc.mak
+endif
+
+## compile for linux with clang
+ifdef LINUX_CLANG
+LINUX = 1
+include make/clang.mak
 endif
 
 ## compile for windows with mingw
@@ -90,6 +96,7 @@ endif
 
 ## if all else fails, just assume gcc
 ifndef LINUX_GCC
+ifndef LINUX_CLANG
 ifndef WINDOWS_MINGW
 ifndef LINUX_WATCOM
 ifndef DOS_WATCOM
@@ -99,6 +106,7 @@ ifndef OS2_WATCOM
 ifndef DOS_DJGPP
 LINUX = 1
 include make/gcc.mak
+endif
 endif
 endif
 endif
@@ -161,5 +169,6 @@ rexdos:
 clean:
 	$(RM) *_linux_gcc
 	$(RM) *_linux_watcom
+	$(RM) *_linux_clang
 	$(RM) *.exe *.obj *.o *.err *.rex
 	$(RM) *.EXE *.OBJ *.O *.ERR *.REX
