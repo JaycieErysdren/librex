@@ -100,6 +100,12 @@ extern "C" {
 
 #define ATTR_PACKED __attribute__((packed))
 
+#else
+
+#define ATTR_PACKED
+
+#endif
+
 /* *************************************
  *
  * types
@@ -108,12 +114,6 @@ extern "C" {
 
 /* fputc function which can be defined by the user */
 typedef int (*librex_putf)(int c, FILE *stream);
-
-#else
-
-#define ATTR_PACKED
-
-#endif
 
 #ifdef __cplusplus
 }
