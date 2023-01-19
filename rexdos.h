@@ -175,16 +175,20 @@ static void dos_clear_screen();
 
 /* graphics mode functions */
 static void dos_graphics_clear_screen();
+static void dos_graphics_place_buffer(uint8_t *s, size_t n);
 
 /* text mode functions */
 static void dos_text_set_cursor_shape(uint16_t shape);
-static void dos_text_set_cursor_pos(uint8_t x, uint8_t y);
-static void dos_text_get_cursor_pos(uint8_t *x, uint8_t *y);
+static void dos_text_set_cursor_pos(uint16_t x, uint16_t y);
+static void dos_text_get_cursor_pos(uint16_t *x, uint16_t *y);
 static void dos_text_clear_screen();
 static int dos_text_get_screen_columns();
 static int dos_text_get_screen_rows();
 static void dos_text_get_screen_size(int *w, int *h);
 static int dos_text_get_attributes();
+static void dos_text_place_buffer(uint16_t *s, size_t n);
+static void dos_text_puts(uint16_t x, uint16_t y, const char *s);
+static void dos_text_putc(uint16_t x, uint16_t y, uint16_t c);
 
 /* microsoft mouse */
 static void dos_mouse_enable();
@@ -238,6 +242,14 @@ static void dos_graphics_clear_screen()
 	dos_text_set_cursor_pos(0, 0);
 }
 
+/* place n 1-byte segments from pointer s to the graphics memory */
+static void dos_graphics_place_buffer(uint8_t *s, size_t n)
+{
+	/* sanity check */
+	if (n > 64000) return;
+	memcpy((void *)DOS_GRAPHICS_MEMORY, (void *)s, n * sizeof(uint8_t));
+}
+
 /*
  * text mode functions
  */
@@ -252,7 +264,7 @@ static void dos_text_set_cursor_shape(uint16_t shape)
 }
 
 /* set text cursor position */
-static void dos_text_set_cursor_pos(uint8_t x, uint8_t y)
+static void dos_text_set_cursor_pos(uint16_t x, uint16_t y)
 {
 	union REGS r;
 	r.h.ah = 2;
@@ -263,7 +275,7 @@ static void dos_text_set_cursor_pos(uint8_t x, uint8_t y)
 }
 
 /* get text cursor position */
-static void dos_text_get_cursor_pos(uint8_t *x, uint8_t *y)
+static void dos_text_get_cursor_pos(uint16_t *x, uint16_t *y)
 {
 	union REGS r;
 	r.h.ah = 3;
@@ -329,6 +341,47 @@ static int dos_text_get_attributes()
 	int386(0x10, &r, &r);
 
 	return r.h.ah;
+}
+
+/* place n 2-byte segments from pointer s to the text memory */
+static void dos_text_place_buffer(uint16_t *s, size_t n)
+{
+	/* variables */
+	size_t max = dos_text_get_screen_rows() * dos_text_get_screen_columns();
+
+	/* sanity check */
+	if (n > max) return;
+	memcpy((void *)DOS_TEXT_MEMORY, (void *)s, n * sizeof(uint16_t));
+}
+
+/* place string s at column x, row y */
+static void dos_text_puts(uint16_t x, uint16_t y, const char *s)
+{
+	/* variables */
+	uint16_t ox, oy;
+
+	/* save old cursor pos */
+	dos_text_get_cursor_pos(&ox, &oy);
+
+	/* perform put */
+	dos_text_set_cursor_pos(x, y);
+	puts(s);
+	dos_text_set_cursor_pos(ox, oy);
+}
+
+/* place char c at column x, row y */
+static void dos_text_putc(uint16_t x, uint16_t y, uint16_t c)
+{
+	/* variables */
+	uint16_t ox, oy;
+
+	/* save old cursor pos */
+	dos_text_get_cursor_pos(&ox, &oy);
+
+	/* perform put */
+	dos_text_set_cursor_pos(x, y);
+	putchar(c);
+	dos_text_set_cursor_pos(ox, oy);
 }
 
 /*

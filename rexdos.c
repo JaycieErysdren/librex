@@ -47,8 +47,15 @@
 
 int main(int argc, char **argv)
 {
+	/* variables */
+	FILE *file;
+	uint16_t *buffer;
+
 	/* set video mode to 3 (80x25 text mode) */
 	dos_set_mode(DOS_MODE_3);
+
+	/* test placing text at position */
+	dos_text_puts(6, 6, "hello this is a string at 6, 6.");
 
 	/* mouse cursor test */
 	printf("mouse cursor test\n");
@@ -92,6 +99,16 @@ int main(int argc, char **argv)
 	dos_mouse_hide();
 	dos_text_set_cursor_shape(DOS_CURSOR_LINE);
 	dos_set_mode(DOS_MODE_3);
+
+	/* test placing an ANSI buffer */
+	dos_text_set_cursor_pos(0, 24);
+	file = fopen("local/end.bin", "rb");
+	if (!file) return EXIT_FAILURE;
+	buffer = (uint16_t *)LIBREX_MALLOC(80 * 25 * sizeof(uint16_t));
+	fread(buffer, sizeof(uint16_t), 80 * 25, file);
+	fclose(file);
+	dos_text_place_buffer(buffer, 80 * 25);
+	LIBREX_FREE(buffer);
 
 	/* exit gracefully */
 	return EXIT_SUCCESS;
