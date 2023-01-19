@@ -32,12 +32,18 @@
  *
  * authors: erysdren
  *
- * last modified: january 16 2023
+ * last modified: january 18 2023
+ * 
+ * description: rexstring.h test app
  *
  * ********************************** */
 
+/* std */
+#include <stdio.h>
+#include <stdlib.h>
+
 /* rex */
-#include "rex.h"
+#include "rexstring.h"
 
 int main(int argc, char **argv)
 {

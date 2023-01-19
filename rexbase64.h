@@ -34,6 +34,8 @@
  *
  * last modified: january 16 2023
  *
+ * description: base64 handling
+ * 
  * ********************************** */
 
 /* header guard */
@@ -44,6 +46,25 @@
 /* cpp guard */
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+/* *************************************
+ *
+ * the headers
+ *
+ * ********************************** */
+
+/* if we're included outside of rex.h */
+#ifndef __LIBREX_H__
+
+/* std */
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+
+/* rex */
+#include "rexstd.h"
+
 #endif
 
 /* *************************************
@@ -74,9 +95,11 @@ const int base64_invs[] = {
 static char *base64_encode(const char *in, size_t len);
 static int base64_decode(const char *in, char *out, size_t outlen);
 
+#ifdef __LIBREX_STRING_H__
 /* encoding and decoding strings */
 static string_t base64_encode_string(string_t *src);
 static string_t base64_decode_string(string_t *src);
+#endif
 
 /* utility functions */
 static size_t base64_encoded_size(size_t in);
@@ -180,6 +203,9 @@ static int base64_decode(const char *in, char *out, size_t outlen)
 	return 1;
 }
 
+/* only available if rexstring.h is present */
+#ifdef __LIBREX_STRING_H__
+
 /*
  * encoding and decoding strings
  */
@@ -269,6 +295,8 @@ static string_t base64_decode_string(string_t *src)
 
 	return ret;
 }
+
+#endif /* __LIBREX_STRING_H__ */
 
 /*
  * utility functions

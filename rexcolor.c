@@ -33,16 +33,22 @@
  * authors: erysdren
  *
  * last modified: january 15 2023
+ * 
+ * description: rexcolor.h testapp
  *
  * ********************************** */
 
+/* std */
+#include <stdlib.h>
+#include <stdio.h>
+
 /* rex */
-#include "rex.h"
+#include "rexcolor.h"
 
 int main(int argc, char **argv)
 {
 	/* variables */
-	color c;
+	color_t c;
 
 	/* print header */
 	printf("librex: rexcolor.h test\n");

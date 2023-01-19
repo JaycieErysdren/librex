@@ -32,7 +32,9 @@
  *
  * authors: erysdren
  *
- * last modified: january 16 2023
+ * last modified: january 18 2023
+ * 
+ * description: global librex helpers
  *
  * ********************************** */
 
@@ -52,84 +54,66 @@ extern "C" {
  *
  * ********************************** */
 
+/* if we're included outside of rex.h */
+#ifndef __LIBREX_H__
+
 /* std */
+#include <string.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#include <string.h>
-#include <float.h>
-#include <assert.h>
-#include <stddef.h>
-
-/* djgpp doesn't allow this with c89 std */
-#ifndef __DJGPP__
-
-#include <stdint.h>
 
 #endif
 
 /* *************************************
  *
- * the text macros
+ * text macros
  *
  * ********************************** */
 
-/* pi */
-#ifndef PI
-#define PI 3.14159265358979323846
+/* malloc */
+#ifndef LIBREX_MALLOC
+#define LIBREX_MALLOC(s) malloc(s)
 #endif
 
-/* return whatever value is lower */
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+/* realloc */
+#ifndef LIBREX_REALLOC
+#define LIBREX_REALLOC(p, s) realloc(p, s)
+#endif
 
-/* return whatever value is higher */
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+/* calloc */
+#ifndef LIBREX_CALLOC
+#define LIBREX_CALLOC(n, s) calloc(n, s)
+#endif
 
-/* clamp value to min and max */
-#define CLAMP(a, min, max) MIN(MAX(a, min), max)
+/* free */
+#ifndef LIBREX_FREE
+#define LIBREX_FREE(p) free(p)
+#endif
 
-/* return absolute value */
-#define ABS(a) (((a) < 0) ? -(a) : (a))
+/* *************************************
+ *
+ * gcc attributes
+ *
+ * ********************************** */
 
-/* return sign */
-#define SGN(a) (((a) < 0) ? -1 : (((a) > 0) ? 1 : 0))
-
-/* gcc attributes */
+/* only enable in gcc-like compilers */
 #if defined(__GNUC__) || defined(__DJGPP__)
 
 #define ATTR_PACKED __attribute__((packed))
 
-#else
-
-#define ATTR_PACKED
-
-#endif
-
 /* *************************************
  *
- * the types
+ * types
  *
  * ********************************** */
 
 /* fputc function which can be defined by the user */
 typedef int (*librex_putf)(int c, FILE *stream);
 
-/* *************************************
- *
- * the forward declarations
- *
- * ********************************** */
+#else
 
+#define ATTR_PACKED
 
-
-/* *************************************
- *
- * the functions
- *
- * ********************************** */
-
-
+#endif
 
 #ifdef __cplusplus
 }

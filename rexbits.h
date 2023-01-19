@@ -32,7 +32,9 @@
  *
  * authors: erysdren
  *
- * last modified: january 16 2023
+ * last modified: january 18 2023
+ * 
+ * description: bit swapping macros
  *
  * ********************************** */
 
@@ -48,16 +50,47 @@ extern "C" {
 
 /* *************************************
  *
+ * the headers
+ *
+ * ********************************** */
+
+/* stdint */
+#ifdef __DJGPP__
+#include "rexint.h"
+#else
+#include <stdint.h>
+#endif
+
+/* *************************************
+ *
  * the forward declarations
  *
  * ********************************** */
 
-int16 bitswap_int16(int16 *val);
-uint16 bitswap_uint16(uint16 *val);
-int32 bitswap_int32(int32 *val);
-uint32 bitswap_uint32(uint32 *val);
-int64 bitswap_int64(int64 *val);
-uint64 bitswap_uint64(uint64 *val);
+int16_t bitswap_int16(int16_t *val);
+uint16_t bitswap_uint16(uint16_t *val);
+int32_t bitswap_int32(int32_t *val);
+uint32_t bitswap_uint32(uint32_t *val);
+int64_t bitswap_int64(int64_t *val);
+uint64_t bitswap_uint64(uint64_t *val);
+
+/* *************************************
+ *
+ * the text macros
+ *
+ * ********************************** */
+
+/* 16-bit int */
+#define SWAP_INT16(a) bitswap_int16(&a)
+#define SWAP_UINT16(a) bitswap_uint16(&a)
+
+/* 32-bit int */
+#define SWAP_INT32(a) bitswap_int32(&a)
+#define SWAP_UINT32(a) bitswap_uint32(&a)
+
+/* 64-bit int */
+#define SWAP_INT64(a) bitswap_int64(&a)
+#define SWAP_UINT64(a) bitswap_uint64(&a)
 
 /* *************************************
  *
@@ -65,8 +98,8 @@ uint64 bitswap_uint64(uint64 *val);
  *
  * ********************************** */
 
-/* bit swap int16 */
-int16 bitswap_int16(int16 *val)
+/* bit swap int16_t */
+int16_t bitswap_int16(int16_t *val)
 {
 	assert(val);
 
@@ -75,8 +108,8 @@ int16 bitswap_int16(int16 *val)
 	return *val;
 }
 
-/* bit swap uint16 */
-uint16 bitswap_uint16(uint16 *val)
+/* bit swap uint16_t */
+uint16_t bitswap_uint16(uint16_t *val)
 {
 	assert(val);
 
@@ -85,10 +118,10 @@ uint16 bitswap_uint16(uint16 *val)
 	return *val;
 }
 
-/* bit swap int32 */
-int32 bitswap_int32(int32 *val)
+/* bit swap int32_t */
+int32_t bitswap_int32(int32_t *val)
 {
-	int32 out;
+	int32_t out;
 
 	assert(val);
 
@@ -98,10 +131,10 @@ int32 bitswap_int32(int32 *val)
 	return *val;
 }
 
-/* bit swap uint32 */
-uint32 bitswap_uint32(uint32 *val)
+/* bit swap uint32_t */
+uint32_t bitswap_uint32(uint32_t *val)
 {
-	uint32 out;
+	uint32_t out;
 
 	assert(val);
 
@@ -111,10 +144,10 @@ uint32 bitswap_uint32(uint32 *val)
 	return *val;
 }
 
-/* bit swap int64 */
-int64 bitswap_int64(int64 *val)
+/* bit swap int64_t */
+int64_t bitswap_int64(int64_t *val)
 {
-	int64 out;
+	int64_t out;
 
 	assert(val);
 
@@ -125,10 +158,10 @@ int64 bitswap_int64(int64 *val)
 	return *val;
 }
 
-/* bit swap uint64 */
-uint64 bitswap_uint64(uint64 *val)
+/* bit swap uint64_t */
+uint64_t bitswap_uint64(uint64_t *val)
 {
-	uint64 out;
+	uint64_t out;
 
 	assert(val);
 

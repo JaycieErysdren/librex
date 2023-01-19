@@ -32,8 +32,10 @@
  *
  * authors: erysdren
  *
- * last modified: january 16 2023
+ * last modified: january 18 2023
  *
+ * description: rgba color handling
+ * 
  * ********************************** */
 
 /* header guard */
@@ -48,19 +50,35 @@ extern "C" {
 
 /* *************************************
  *
+ * the headers
+ *
+ * ********************************** */
+
+/* std */
+#include <assert.h>
+
+/* rex */
+#ifdef __DJGPP__
+#include "rexint.h"
+#else
+#include <stdint.h>
+#endif
+
+/* *************************************
+ *
  * the types
  *
  * ********************************** */
 
 /* color struct */
-typedef struct color
+typedef struct color_t
 {
 
 	union val
 	{
-		uint8 u8;
-		uint16 u16;
-		uint32 u32;
+		uint8_t u8;
+		uint16_t u16;
+		uint32_t u32;
 	} val;
 
 	enum tag
@@ -71,7 +89,7 @@ typedef struct color
 		ARGB8888
 	} tag;
 
-} color;
+} color_t;
 
 /* *************************************
  *
@@ -80,45 +98,45 @@ typedef struct color
  * ********************************** */
 
 /* set value of color */
-void color_set_index8(color *c, uint8 i);
-void color_set_rgb565(color *c, uint8 r, uint8 g, uint8 b);
-void color_set_rgba8888(color *c, uint8 r, uint8 g, uint8 b, uint8 a);
-void color_set_argb8888(color *c, uint8 r, uint8 g, uint8 b, uint8 a);
+void color_set_index8(color_t *c, uint8_t i);
+void color_set_rgb565(color_t *c, uint8_t r, uint8_t g, uint8_t b);
+void color_set_rgba8888(color_t *c, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+void color_set_argb8888(color_t *c, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
 /* retrieve color components */
-uint8 color_get_index8(color *c);
-uint8 color_get_red(color *c);
-uint8 color_get_green(color *c);
-uint8 color_get_blue(color *c);
-uint8 color_get_alpha(color *c);
+uint8_t color_get_index8(color_t *c);
+uint8_t color_get_red(color_t *c);
+uint8_t color_get_green(color_t *c);
+uint8_t color_get_blue(color_t *c);
+uint8_t color_get_alpha(color_t *c);
 
-/* retrieve color components as float32s */
-float32 color_get_redf(color *c);
-float32 color_get_greenf(color *c);
-float32 color_get_bluef(color *c);
-float32 color_get_alphaf(color *c);
+/* retrieve color components as floats */
+float color_get_redf(color_t *c);
+float color_get_greenf(color_t *c);
+float color_get_bluef(color_t *c);
+float color_get_alphaf(color_t *c);
 
 /* color packing */
-uint16 pack_rgb565(uint8 r, uint8 g, uint8 b);
-uint32 pack_rgba8888(uint8 r, uint8 g, uint8 b, uint8 a);
-uint32 pack_argb8888(uint8 r, uint8 g, uint8 b, uint8 a);
+uint16_t pack_rgb565(uint8_t r, uint8_t g, uint8_t b);
+uint32_t pack_rgba8888(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+uint32_t pack_argb8888(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
 /* color unpacking: rgb565 */
-uint8 unpack_rgb565_red(uint16 c);
-uint8 unpack_rgb565_green(uint16 c);
-uint8 unpack_rgb565_blue(uint16 c);
+uint8_t unpack_rgb565_red(uint16_t c);
+uint8_t unpack_rgb565_green(uint16_t c);
+uint8_t unpack_rgb565_blue(uint16_t c);
 
 /* color unpacking: rgba8888 */
-uint8 unpack_rgba8888_red(uint32 c);
-uint8 unpack_rgba8888_green(uint32 c);
-uint8 unpack_rgba8888_blue(uint32 c);
-uint8 unpack_rgba8888_alpha(uint32 c);
+uint8_t unpack_rgba8888_red(uint32_t c);
+uint8_t unpack_rgba8888_green(uint32_t c);
+uint8_t unpack_rgba8888_blue(uint32_t c);
+uint8_t unpack_rgba8888_alpha(uint32_t c);
 
 /* color unpacking: argb8888 */
-uint8 unpack_argb8888_red(uint32 c);
-uint8 unpack_argb8888_green(uint32 c);
-uint8 unpack_argb8888_blue(uint32 c);
-uint8 unpack_argb8888_alpha(uint32 c);
+uint8_t unpack_argb8888_red(uint32_t c);
+uint8_t unpack_argb8888_green(uint32_t c);
+uint8_t unpack_argb8888_blue(uint32_t c);
+uint8_t unpack_argb8888_alpha(uint32_t c);
 
 /* *************************************
  *
@@ -131,7 +149,7 @@ uint8 unpack_argb8888_alpha(uint32 c);
  */
 
 /* set color type to index8, and set value */
-void color_set_index8(color *c, uint8 i)
+void color_set_index8(color_t *c, uint8_t i)
 {
 	assert(c);
 	c->tag = INDEX8;
@@ -139,7 +157,7 @@ void color_set_index8(color *c, uint8 i)
 }
 
 /* set color type to rgb565, and set value */
-void color_set_rgb565(color *c, uint8 r, uint8 g, uint8 b)
+void color_set_rgb565(color_t *c, uint8_t r, uint8_t g, uint8_t b)
 {
 	assert(c);
 	c->tag = RGB565;
@@ -147,7 +165,7 @@ void color_set_rgb565(color *c, uint8 r, uint8 g, uint8 b)
 }
 
 /* set color type to rgba8888, and set value */
-void color_set_rgba8888(color *c, uint8 r, uint8 g, uint8 b, uint8 a)
+void color_set_rgba8888(color_t *c, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
 	assert(c);
 	c->tag = RGBA8888;
@@ -155,7 +173,7 @@ void color_set_rgba8888(color *c, uint8 r, uint8 g, uint8 b, uint8 a)
 }
 
 /* set color type to argb8888, and set value */
-void color_set_argb8888(color *c, uint8 r, uint8 g, uint8 b, uint8 a)
+void color_set_argb8888(color_t *c, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
 	assert(c);
 	c->tag = ARGB8888;
@@ -167,14 +185,14 @@ void color_set_argb8888(color *c, uint8 r, uint8 g, uint8 b, uint8 a)
  */
 
 /* retrieve index of 8-bit color */
-uint8 color_get_index8(color *c)
+uint8_t color_get_index8(color_t *c)
 {
 	assert(c);
 	return (c->tag == INDEX8) ? c->val.u8 : 0;
 }
 
 /* retrieve red color component */
-uint8 color_get_red(color *c)
+uint8_t color_get_red(color_t *c)
 {
 	assert(c);
 	switch (c->tag)
@@ -191,7 +209,7 @@ uint8 color_get_red(color *c)
 }
 
 /* retrieve green color component */
-uint8 color_get_green(color *c)
+uint8_t color_get_green(color_t *c)
 {
 	assert(c);
 	switch (c->tag)
@@ -208,7 +226,7 @@ uint8 color_get_green(color *c)
 }
 
 /* retrieve blue color component */
-uint8 color_get_blue(color *c)
+uint8_t color_get_blue(color_t *c)
 {
 	assert(c);
 	switch (c->tag)
@@ -225,7 +243,7 @@ uint8 color_get_blue(color *c)
 }
 
 /* retrieve alpha color component */
-uint8 color_get_alpha(color *c)
+uint8_t color_get_alpha(color_t *c)
 {
 	assert(c);
 	switch (c->tag)
@@ -240,63 +258,63 @@ uint8 color_get_alpha(color *c)
 }
 
 /* retrieve color components as floats */
-float32 color_get_redf(color *c)
+float color_get_redf(color_t *c)
 {
 	assert(c);
 	switch (c->tag)
 	{
 		case RGB565: 
-			return (float32)unpack_rgb565_red(c->val.u16) / 255.0f;
+			return (float)unpack_rgb565_red(c->val.u16) / 255.0f;
 		case RGBA8888: 
-			return (float32)unpack_rgba8888_red(c->val.u32) / 255.0f;
+			return (float)unpack_rgba8888_red(c->val.u32) / 255.0f;
 		case ARGB8888: 
-			return (float32)unpack_argb8888_red(c->val.u32) / 255.0f;
+			return (float)unpack_argb8888_red(c->val.u32) / 255.0f;
 		default:
 			return 0.0f;
 	}
 }
 
-float32 color_get_greenf(color *c)
+float color_get_greenf(color_t *c)
 {
 	assert(c);
 	switch (c->tag)
 	{
 		case RGB565: 
-			return (float32)unpack_rgb565_green(c->val.u16) / 255.0f;
+			return (float)unpack_rgb565_green(c->val.u16) / 255.0f;
 		case RGBA8888: 
-			return (float32)unpack_rgba8888_green(c->val.u32) / 255.0f;
+			return (float)unpack_rgba8888_green(c->val.u32) / 255.0f;
 		case ARGB8888: 
-			return (float32)unpack_argb8888_green(c->val.u32) / 255.0f;
+			return (float)unpack_argb8888_green(c->val.u32) / 255.0f;
 		default:
 			return 0.0f;
 	}
 }
 
-float32 color_get_bluef(color *c)
+float color_get_bluef(color_t *c)
 {
 	assert(c);
 	switch (c->tag)
 	{
 		case RGB565: 
-			return (float32)unpack_rgb565_blue(c->val.u16) / 255.0f;
+			return (float)unpack_rgb565_blue(c->val.u16) / 255.0f;
 		case RGBA8888: 
-			return (float32)unpack_rgba8888_blue(c->val.u32) / 255.0f;
+			return (float)unpack_rgba8888_blue(c->val.u32) / 255.0f;
 		case ARGB8888: 
-			return (float32)unpack_argb8888_blue(c->val.u32) / 255.0f;
+			return (float)unpack_argb8888_blue(c->val.u32) / 255.0f;
 		default:
 			return 0.0f;
 	}
 }
 
-float32 color_get_alphaf(color *c)
+float color_get_alphaf(color_t *c)
 {
 	assert(c);
 	switch (c->tag)
 	{
 		case RGBA8888: 
-			return (float32)unpack_rgba8888_alpha(c->val.u32) / 255.0f;
+			return (float)unpack_rgba8888_alpha(c->val.u32) / 255.0f;
 		case ARGB8888: 
-			return (float32)unpack_argb8888_alpha(c->val.u32) / 255.0f;
+			return (float)unpack_argb8888_alpha(c->val.u32) / 255.0f;
 		default:
 			return 0.0f;
 	}
@@ -307,23 +325,23 @@ float32 color_get_alphaf(color *c)
  */
 
 /* pack rgb triplet to rgb565 format */
-uint16 pack_rgb565(uint8 r, uint8 g, uint8 b)
+uint16_t pack_rgb565(uint8_t r, uint8_t g, uint8_t b)
 {
-	return (uint16)((((r >> 3) & 0x1f) << 11) |
+	return (uint16_t)((((r >> 3) & 0x1f) << 11) |
 			(((g >> 2) & 0x3f) << 5) |
 			((b >> 3) & 0x1f));
 }
 
 /* pack rgba quadruplet to rgba8888 format */
-uint32 pack_rgba8888(uint8 r, uint8 g, uint8 b, uint8 a)
+uint32_t pack_rgba8888(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
-	return (uint32)((r << 24) | (g << 16) | (b << 8) | a);
+	return (uint32_t)((r << 24) | (g << 16) | (b << 8) | a);
 }
 
 /* pack rgba quadruplet to argb8888 format */
-uint32 pack_argb8888(uint8 r, uint8 g, uint8 b, uint8 a)
+uint32_t pack_argb8888(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
-	return (uint32)((a << 24) | (r << 16) | (g << 8) | b);
+	return (uint32_t)((a << 24) | (r << 16) | (g << 8) | b);
 }
 
 /*
@@ -331,21 +349,21 @@ uint32 pack_argb8888(uint8 r, uint8 g, uint8 b, uint8 a)
  */
 
 /* retrieve red from rgb565 int */
-uint8 unpack_rgb565_red(uint16 c)
+uint8_t unpack_rgb565_red(uint16_t c)
 {
-	return (uint8)(((c & 0xF800) >> 11) << 3);
+	return (uint8_t)(((c & 0xF800) >> 11) << 3);
 }
 
 /* retrieve green from rgb565 int */
-uint8 unpack_rgb565_green(uint16 c)
+uint8_t unpack_rgb565_green(uint16_t c)
 {
-	return (uint8)(((c & 0x7E0) >> 5) << 2);
+	return (uint8_t)(((c & 0x7E0) >> 5) << 2);
 }
 
 /* retrieve blue from rgb565 int */
-uint8 unpack_rgb565_blue(uint16 c)
+uint8_t unpack_rgb565_blue(uint16_t c)
 {
-	return (uint8)((c & 0x1F) << 3);
+	return (uint8_t)((c & 0x1F) << 3);
 }
 
 /*
@@ -353,27 +371,27 @@ uint8 unpack_rgb565_blue(uint16 c)
  */
 
 /* retrieve red from rgba8888 int */
-uint8 unpack_rgba8888_red(uint32 c)
+uint8_t unpack_rgba8888_red(uint32_t c)
 {
-	return (uint8)((c >> 24) & 0xFF);
+	return (uint8_t)((c >> 24) & 0xFF);
 }
 
 /* retrieve green from rgba8888 int */
-uint8 unpack_rgba8888_green(uint32 c)
+uint8_t unpack_rgba8888_green(uint32_t c)
 {
-	return (uint8)((c >> 8) & 0xFF);
+	return (uint8_t)((c >> 8) & 0xFF);
 }
 
 /* retrieve blue from rgba8888 int */
-uint8 unpack_rgba8888_blue(uint32 c)
+uint8_t unpack_rgba8888_blue(uint32_t c)
 {
-	return (uint8)((c >> 8) & 0xFF);
+	return (uint8_t)((c >> 8) & 0xFF);
 }
 
 /* retrieve alpha from rgba8888 int */
-uint8 unpack_rgba8888_alpha(uint32 c)
+uint8_t unpack_rgba8888_alpha(uint32_t c)
 {
-	return (uint8)(c & 0xFF);
+	return (uint8_t)(c & 0xFF);
 }
 
 /*
@@ -381,27 +399,27 @@ uint8 unpack_rgba8888_alpha(uint32 c)
  */
 
 /* retrieve red from argb8888 int */
-uint8 unpack_argb8888_red(uint32 c)
+uint8_t unpack_argb8888_red(uint32_t c)
 {
-	return (uint8)((c >> 16) & 0xFF);
+	return (uint8_t)((c >> 16) & 0xFF);
 }
 
 /* retrieve green from argb8888 int */
-uint8 unpack_argb8888_green(uint32 c)
+uint8_t unpack_argb8888_green(uint32_t c)
 {
-	return (uint8)((c >> 8) & 0xFF);
+	return (uint8_t)((c >> 8) & 0xFF);
 }
 
 /* retrieve blue from argb8888 int */
-uint8 unpack_argb8888_blue(uint32 c)
+uint8_t unpack_argb8888_blue(uint32_t c)
 {
-	return (uint8)(c & 0xFF);
+	return (uint8_t)(c & 0xFF);
 }
 
 /* retrieve alpha from argb8888 int */
-uint8 unpack_argb8888_alpha(uint32 c)
+uint8_t unpack_argb8888_alpha(uint32_t c)
 {
-	return (uint8)((c >> 24) & 0xFF);
+	return (uint8_t)((c >> 24) & 0xFF);
 }
 
 #ifdef __cplusplus

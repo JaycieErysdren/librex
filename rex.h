@@ -32,8 +32,10 @@
  *
  * authors: erysdren
  *
- * last modified: january 17 2023
+ * last modified: january 18 2023
  *
+ * description: librex main header
+ * 
  * ********************************** */
 
 /* header guard */
@@ -52,9 +54,29 @@ extern "C" {
  *
  * ********************************** */
 
+/* std */
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
+#include <string.h>
+#include <float.h>
+#include <assert.h>
+#include <stddef.h>
+
+/*
+ * djgpp doesn't allow stdint.h with c89
+ * other compilers tend to be more leniant 
+ */
+#ifdef __DJGPP__
+#include "rexint.h"
+#else
+#include <stdint.h>
+#endif
+
 /* rex: core */
 #include "rexstd.h"
-#include "rexint.h"
+#include "rexmath.h"
 #include "rexfloat.h"
 #include "rexfixed.h"
 #include "rexreal.h"
@@ -63,6 +85,11 @@ extern "C" {
 #include "rexcolor.h"
 #include "rexbase64.h"
 #include "rexbits.h"
+
+/* rex: dos i/o */
+#if defined(__DJGPP__) || defined(__WATCOMC__)
+#include "rexdos.h"
+#endif
 
 /* rex: format i/o */
 #include "rexupkg.h"

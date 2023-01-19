@@ -32,7 +32,9 @@
  *
  * authors: erysdren
  *
- * last modified: january 17 2023
+ * last modified: january 18 2023
+ * 
+ * description: standard integer types
  *
  * ********************************** */
 
@@ -52,42 +54,17 @@ extern "C" {
  *
  * ********************************** */
 
-/*
- * on the use of stdint.h types here:
- * may not be 100% portable if you're targeting
- * pre-C99 platforms. please investigate further!
- */
+typedef signed char int8_t;				/* 8-bit signed int */
+typedef unsigned char uint8_t;			/* 8-bit unsigned int */
 
-/* djgpp with c89 std doesn't allow stdint.h */
-#ifdef __DJGPP__
+typedef signed short int16_t;			/* 16-bit signed int */
+typedef unsigned short uint16_t;		/* 16-bit unsigned int */
 
-typedef signed char int8;			/* 8-bit signed int */
-typedef unsigned char uint8;		/* 8-bit unsigned int */
+typedef signed long int32_t;			/* 32-bit signed int */
+typedef unsigned long uint32_t;			/* 32-bit unsigned int */
 
-typedef signed short int16;			/* 16-bit signed int */
-typedef unsigned short uint16;		/* 16-bit unsigned int */
-
-typedef signed long int32;			/* 32-bit signed int */
-typedef unsigned long uint32;		/* 32-bit unsigned int */
-
-typedef signed long long int64;		/* 64-bit signed int */
-typedef unsigned long long uint64;	/* 64-bit unsigned int */
-
-#else
-
-typedef int8_t int8;				/* 8-bit signed int */
-typedef uint8_t uint8;				/* 8-bit unsigned int */
-
-typedef int16_t int16;				/* 16-bit signed int */
-typedef uint16_t uint16;			/* 16-bit unsigned int */
-
-typedef int32_t int32;				/* 32-bit signed int */
-typedef uint32_t uint32;			/* 32-bit unsigned int */
-
-typedef int64_t int64;				/* 64-bit signed int */
-typedef uint64_t uint64;			/* 64-bit unsigned int */
-
-#endif
+typedef signed long long int64_t;		/* 64-bit signed int */
+typedef unsigned long long uint64_t;	/* 64-bit unsigned int */
 
 #ifdef __cplusplus
 }

@@ -32,24 +32,29 @@
  *
  * authors: erysdren
  *
- * last modified: january 16 2023
+ * last modified: january 18 2023
+ * 
+ * description: rexmem.h test app
  *
  * ********************************** */
 
+/* std */
+#include <stdio.h>
+
 /* rex */
-#include "rex.h"
+#include "rexmem.h"
 
 int main(int argc, char **argv)
 {
 	/* variables */
 	mempool mp;
-	uint8 *buf;
+	uint8_t *buf;
 
 	/* create pool */
-	mempool_createpool(&mp, 64 * sizeof(uint8), sizeof(uint8));
+	mempool_createpool(&mp, 64 * sizeof(uint8_t), sizeof(uint8_t));
 
 	/* allocate memory from pool */
-	buf = (uint8 *)mempool_alloc(&mp, 32 * sizeof(uint8));
+	buf = (uint8_t *)mempool_alloc(&mp, 32 * sizeof(uint8_t));
 
 	buf[0] = 8;
 	buf[31] = 17;

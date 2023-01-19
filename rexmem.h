@@ -32,7 +32,9 @@
  *
  * authors: erysdren
  *
- * last modified: january 16 2023
+ * last modified: january 18 2023
+ * 
+ * description: memory management helpers
  *
  * ********************************** */
 
@@ -48,28 +50,25 @@ extern "C" {
 
 /* *************************************
  *
- * the text macros
+ * the headers
  *
  * ********************************** */
 
-/* malloc */
-#ifndef LIBREX_MALLOC
-#define LIBREX_MALLOC(s) malloc(s)
+/* if we're included outside of rex.h */
+#ifndef __LIBREX_H__
+
+/* std */
+#include <stdlib.h>
+#include <assert.h>
+
+/* rex */
+#include "rexstd.h"
+#ifdef __DJGPP__
+#include "rexint.h"
+#else
+#include <stdint.h>
 #endif
 
-/* realloc */
-#ifndef LIBREX_REALLOC
-#define LIBREX_REALLOC(p, s) realloc(p, s)
-#endif
-
-/* calloc */
-#ifndef LIBREX_CALLOC
-#define LIBREX_CALLOC(n, s) calloc(n, s)
-#endif
-
-/* free */
-#ifndef LIBREX_FREE
-#define LIBREX_FREE(p) free(p)
 #endif
 
 /* *************************************
@@ -83,8 +82,8 @@ typedef struct mempool
 {
 	size_t min_alloc;
 	size_t num_blocks;
-	uint8 *next_free;
-	uint8 *blocks;
+	uint8_t *next_free;
+	uint8_t *blocks;
 } mempool;
 
 /* *************************************
@@ -122,7 +121,7 @@ void mempool_createpool(mempool *mp, size_t size, size_t min_alloc)
 	mp->min_alloc = min_alloc;
 
 	/* allocate memory */
-	mp->blocks = (uint8 *)LIBREX_MALLOC(size * sizeof(uint8));
+	mp->blocks = (uint8_t *)LIBREX_MALLOC(size * sizeof(uint8_t));
 	if (!mp->blocks) return;
 
 	/* set next free address to the start */

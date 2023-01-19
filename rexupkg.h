@@ -32,7 +32,7 @@
  *
  * authors: erysdren
  *
- * last modified: january 16 2023
+ * last modified: january 18 2023
  *
  * ********************************** */
 
@@ -48,6 +48,30 @@ extern "C" {
 
 /* *************************************
  *
+ * the headers
+ *
+ * ********************************** */
+
+/* if we're included outside of rex.h */
+#ifndef __LIBREX_H__
+
+/* std */
+#include <stddef.h>
+#include <assert.h>
+
+/* rex */
+#include "rexstd.h"
+
+#ifdef __DJGPP__
+#include "rexint.h"
+#else
+#include <stdint.h>
+#endif
+
+#endif
+
+/* *************************************
+ *
  * the types
  *
  * ********************************** */
@@ -55,54 +79,54 @@ extern "C" {
 /* upkg generation */
 typedef struct upkg_generation_t
 {
-	int32 num_exports;
-	int32 num_names;
+	int32_t num_exports;
+	int32_t num_names;
 } upkg_generation_t;
 
 /* upkg name */
 typedef struct upkg_name_t
 {
-	uint8 len_name;
+	uint8_t len_name;
 	char *name;
-	uint32 flags;
+	uint32_t flags;
 } upkg_name_t;
 
 /* upkg export */
 typedef struct upkg_export_t
 {
-	int32 class_index;		/* compact index */
-	int32 super_index;		/* compact index */
-	int32 package_index;
-	int32 object_name;		/* compact index */
-	uint32 object_flags;
-	int32 len_serial;		/* compact index */
-	int32 ofs_serial;		/* compact index */
+	int32_t class_index;		/* compact index */
+	int32_t super_index;		/* compact index */
+	int32_t package_index;
+	int32_t object_name;		/* compact index */
+	uint32_t object_flags;
+	int32_t len_serial;		/* compact index */
+	int32_t ofs_serial;		/* compact index */
 } upkg_export_t;
 
 /* upkg import */
 typedef struct upkg_import_t
 {
-	int32 class_package;	/* compact index */
-	int32 class_name;		/* compact index */
-	int32 package_index;
-	int32 object_name;		/* compact index */
+	int32_t class_package;	/* compact index */
+	int32_t class_name;		/* compact index */
+	int32_t package_index;
+	int32_t object_name;		/* compact index */
 } upkg_import_t;
 
 /* upkg */
 typedef struct upkg_t
 {
-	uint32 tag;
-	uint16 format_version;
-	uint16 licensee_version;
-	uint32 package_flags;
-	int32 num_names;
-	int32 ofs_names;
-	int32 num_exports;
-	int32 ofs_exports;
-	int32 num_imports;
-	int32 ofs_imports;
-	uint32 guid[4];
-	int32 num_generations;
+	uint32_t tag;
+	uint16_t format_version;
+	uint16_t licensee_version;
+	uint32_t package_flags;
+	int32_t num_names;
+	int32_t ofs_names;
+	int32_t num_exports;
+	int32_t ofs_exports;
+	int32_t num_imports;
+	int32_t ofs_imports;
+	uint32_t guid[4];
+	int32_t num_generations;
 	upkg_generation_t *generations;
 	upkg_name_t *names;
 	upkg_export_t *exports;
@@ -121,7 +145,7 @@ static upkg_t *upkg_open(const char *filename);
 static void upkg_close(upkg_t *upkg);
 
 /* utility functions */
-static int32 upkg_read_compact_index(FILE *stream);
+static int32_t upkg_read_compact_index(FILE *stream);
 static void upkg_print_members(upkg_t *upkg, FILE *stream);
 
 /* *************************************
@@ -183,10 +207,10 @@ static upkg_t *upkg_open(const char *filename)
 	fseek(upkg->handle, upkg->ofs_names, SEEK_SET);
 	for (i = 0; i < upkg->num_names; i++)
 	{
-		fread(&upkg->names[i].len_name, sizeof(uint8), 1, upkg->handle);
+		fread(&upkg->names[i].len_name, sizeof(uint8_t), 1, upkg->handle);
 		upkg->names[i].name = (char *)LIBREX_CALLOC(upkg->names[i].len_name, sizeof(char));
 		fread(upkg->names[i].name, sizeof(char), upkg->names[i].len_name, upkg->handle);
-		fread(&upkg->names[i].flags, sizeof(uint32), 1, upkg->handle);
+		fread(&upkg->names[i].flags, sizeof(uint32_t), 1, upkg->handle);
 	}
 
 	/* allocate imports */
@@ -198,7 +222,7 @@ static upkg_t *upkg_open(const char *filename)
 	{
 		upkg->imports[i].class_package = upkg_read_compact_index(upkg->handle);
 		upkg->imports[i].class_name = upkg_read_compact_index(upkg->handle);
-		fread(&upkg->imports[i].package_index, sizeof(int32), 1, upkg->handle);
+		fread(&upkg->imports[i].package_index, sizeof(int32_t), 1, upkg->handle);
 		upkg->imports[i].object_name = upkg_read_compact_index(upkg->handle);
 	}
 
@@ -211,9 +235,9 @@ static upkg_t *upkg_open(const char *filename)
 	{
 		upkg->exports[i].class_index = upkg_read_compact_index(upkg->handle);
 		upkg->exports[i].super_index = upkg_read_compact_index(upkg->handle);
-		fread(&upkg->exports[i].package_index, sizeof(int32), 1, upkg->handle);
+		fread(&upkg->exports[i].package_index, sizeof(int32_t), 1, upkg->handle);
 		upkg->exports[i].object_name = upkg_read_compact_index(upkg->handle);
-		fread(&upkg->exports[i].object_flags, sizeof(uint32), 1, upkg->handle);
+		fread(&upkg->exports[i].object_flags, sizeof(uint32_t), 1, upkg->handle);
 		upkg->exports[i].len_serial = upkg_read_compact_index(upkg->handle);
 
 		if (upkg->exports[i].len_serial > 0)
@@ -262,10 +286,10 @@ static void upkg_close(upkg_t *upkg)
  */
 
 /* read unreal engine compact index */
-static int32 upkg_read_compact_index(FILE *stream)
+static int32_t upkg_read_compact_index(FILE *stream)
 {
-	int32 ret;
-	uint8 x;
+	int32_t ret;
+	uint8_t x;
 	int sign;
 	int i;
 
@@ -276,7 +300,7 @@ static int32 upkg_read_compact_index(FILE *stream)
 
 	for (i = 0; i < 5; i++)
 	{
-		fread(&x, sizeof(uint8), 1, stream);
+		fread(&x, sizeof(uint8_t), 1, stream);
 
 		if (i == 0)
 		{

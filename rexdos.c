@@ -32,12 +32,18 @@
  *
  * authors: erysdren
  *
- * last modified: january 17 2023
+ * last modified: january 18 2023
+ * 
+ * description: rexdos.h test app
  *
  * ********************************** */
 
+/* std */
+#include <stdlib.h>
+#include <stdio.h>
+
 /* rex */
-#include "rex.h"
+#include "rexdos.h"
 
 int main(int argc, char **argv)
 {

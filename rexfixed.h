@@ -32,7 +32,7 @@
  *
  * authors: erysdren
  *
- * last modified: january 16 2023
+ * last modified: january 18 2023
  *
  * ********************************** */
 
@@ -48,21 +48,38 @@ extern "C" {
 
 /* *************************************
  *
+ * the headers
+ *
+ * ********************************** */
+
+/* if we're included outside of rex.h */
+#ifndef __LIBREX_H__
+
+#ifdef __DJGPP__
+#include "rexint.h"
+#else
+#include <stdint.h>
+#endif
+
+#endif
+
+/* *************************************
+ *
  * fixed point types
  *
  * ********************************** */
 
-typedef int32 fix32;				/* 32-bit signed fixed (15.16) */
-typedef uint32 ufix32;				/* 32-bit unsigned fixed (16.16) */
+typedef int32_t fix32;				/* 32-bit signed fixed (15.16) */
+typedef uint32_t ufix32;			/* 32-bit unsigned fixed (16.16) */
 
-typedef int16 frac32;				/* 32-bit signed fraction (0.15) */
-typedef uint16 ufrac32;				/* 32-bit unsigned fraction (0.16) */
+typedef int16_t frac32;				/* 32-bit signed fraction (0.15) */
+typedef uint16_t ufrac32;			/* 32-bit unsigned fraction (0.16) */
 
-typedef int16 fix16;				/* 16-bit signed fixed (7.8) */
-typedef uint16 ufix16;				/* 16-bit unsigned fixed (8.8) */
+typedef int16_t fix16;				/* 16-bit signed fixed (7.8) */
+typedef uint16_t ufix16;			/* 16-bit unsigned fixed (8.8) */
 
-typedef int8 frac16;				/* 16-bit signed fraction (0.7) */
-typedef uint8 ufrac16;				/* 16-bit unsigned fraction (0.8) */
+typedef int8_t frac16;				/* 16-bit signed fraction (0.7) */
+typedef uint8_t ufrac16;			/* 16-bit unsigned fraction (0.8) */
 
 /*
  * 32-bit fixed
@@ -102,8 +119,8 @@ typedef uint8 ufrac16;				/* 16-bit unsigned fraction (0.8) */
 					UFRAC32_ONE - 1 : UFRAC32_ONE * (a)))
 
 /* 32-bit math macros */
-#define FIX32_MUL(a, b) (((int64)(a) * (b)) >> 16)
-#define FIX32_DIV(a, b) (((int64)(a) << 16) / (b))
+#define FIX32_MUL(a, b) (((int64_t)(a) * (b)) >> 16)
+#define FIX32_DIV(a, b) (((int64_t)(a) << 16) / (b))
 #define FIX32_FLOOR(a) ((a) & FIX32_MASK)
 #define FIX32_CEIL(a) ((((a) & FRAC32_MASK) == 0) ? (a) : \
 					FIX32_FLOOR((a) + FIX32_ONE))

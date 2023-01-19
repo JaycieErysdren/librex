@@ -32,7 +32,9 @@
  *
  * authors: erysdren
  *
- * last modified: january 16 2023
+ * last modified: january 18 2023
+ * 
+ * description: string library
  *
  * ********************************** */
 
@@ -44,6 +46,25 @@
 /* cpp guard */
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+/* *************************************
+ *
+ * the headers
+ *
+ * ********************************** */
+
+/* if we're included outside of rex.h */
+#ifndef __LIBREX_H__
+
+/* std */
+#include <stdarg.h>
+#include <string.h>
+#include <assert.h>
+
+/* rex */
+#include "rexstd.h"
+
 #endif
 
 /* *************************************

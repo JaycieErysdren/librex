@@ -28,102 +28,54 @@
  *
  * project: librex
  *
- * file: rexdos.h
+ * file: rexmath.h
  *
  * authors: erysdren
  *
  * last modified: january 18 2023
- *
- * description: dos platform i/o
  * 
+ * description: math helper macros
+ *
  * ********************************** */
 
 /* header guard */
 #pragma once
-#ifndef __LIBREX_DOS_H__
-#define __LIBREX_DOS_H__
+#ifndef __LIBREX_MATH_H__
+#define __LIBREX_MATH_H__
 
 /* cpp guard */
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/*
- * this file is special. we need to trigger a failure
- * if its not being compiled by a supported dos compiler
- */
-#if !defined(__DJGPP__) && !defined(__WATCOMC__)
-#error "rexdos.h can only be compiled with watcom or djgpp!"
-#endif
-
 /* *************************************
  *
- * the headers
+ * the text macros
  *
  * ********************************** */
 
-/* if we're included outside of rex.h */
-#ifndef __LIBREX_H__
-
-#include "rexstd.h"
-#include "rexint.h"
-
+/* pi */
+#ifndef PI
+#define PI 3.14159265358979323846
 #endif
 
-/* dos headers */
-#if defined(__DJGPP__) || defined(__WATCOMC__)
+/* return whatever value is lower */
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
-/* standard dos headers */
-#include <dos.h>
-#include <io.h>
-#include <conio.h>
+/* return whatever value is higher */
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
-#endif
+/* clamp value to min and max */
+#define CLAMP(a, min, max) MIN(MAX(a, min), max)
 
-/* watcom headers */
-#ifdef __WATCOMC__
+/* return absolute value */
+#define ABS(a) (((a) < 0) ? -(a) : (a))
 
-#include <i86.h>
-#include <graph.h>
-
-#endif
-
-/* djgpp headers */
-#ifdef __DJGPP__
-
-#include <dpmi.h>
-#include <go32.h>
-#include <sys/nearptr.h>
-#include <sys/farptr.h>
-
-#endif
-
-/* *************************************
- *
- * the types
- *
- * ********************************** */
-
-
-
-/* *************************************
- *
- * the forward declarations
- *
- * ********************************** */
-
-static void dos_setvidmode(uint16 mode);
-
-/* *************************************
- *
- * the functions
- *
- * ********************************** */
-
-
+/* return sign */
+#define SGN(a) (((a) < 0) ? -1 : (((a) > 0) ? 1 : 0))
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __LIBREX_DOS_H__ */
+#endif /* __LIBREX_MATH_H__ */

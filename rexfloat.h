@@ -32,8 +32,10 @@
  *
  * authors: erysdren
  *
- * last modified: january 16 2023
+ * last modified: january 18 2023
  *
+ * description: float helper macros
+ * 
  * ********************************** */
 
 /* header guard */
@@ -44,6 +46,23 @@
 /* cpp guard */
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+/* *************************************
+ *
+ * the headers
+ *
+ * ********************************** */
+
+/* if we're included outside of rex.h */
+#ifndef __LIBREX_H__
+
+#ifdef __DJGPP__
+#include "rexint.h"
+#else
+#include <stdint.h>
+#endif
+
 #endif
 
 /* *************************************
@@ -62,18 +81,18 @@ typedef double float64;				/* 64-bit float */
 /* 32-bit float math macros */
 #define FLOAT32_MUL(a, b) ((a) * (b))
 #define FLOAT32_DIV(a, b) ((a) / (b))
-#define FLOAT32_FLOOR(a) ((int32)(a))
-#define FLOAT32_CEIL(a) ((int32)(a) == (a) ? (a) : (int32)((a) + 1))
-#define FLOAT32_FRAC(a) ((a) - (int32)(a))
-#define FLOAT32_ROUND(a) ((int32)((a) < 0 ? (a) - 0.5 : (a) + 0.5))
+#define FLOAT32_FLOOR(a) ((int32_t)(a))
+#define FLOAT32_CEIL(a) ((int32_t)(a) == (a) ? (a) : (int32_t)((a) + 1))
+#define FLOAT32_FRAC(a) ((a) - (int32_t)(a))
+#define FLOAT32_ROUND(a) ((int32_t)((a) < 0 ? (a) - 0.5 : (a) + 0.5))
 
 /* 64-bit float math macros */
 #define FLOAT64_MUL(a, b) ((a) * (b))
 #define FLOAT64_DIV(a, b) ((a) / (b))
-#define FLOAT64_FLOOR(a) ((int64)(a))
-#define FLOAT64_CEIL(a) ((int64)(a) == (a) ? (a) : (int64)((a) + 1))
-#define FLOAT64_FRAC(a) ((a) - (int64)(a))
-#define FLOAT64_ROUND(a) ((int64)((a) < 0 ? (a) - 0.5 : (a) + 0.5))
+#define FLOAT64_FLOOR(a) ((int64_t)(a))
+#define FLOAT64_CEIL(a) ((int64_t)(a) == (a) ? (a) : (int64_t)((a) + 1))
+#define FLOAT64_FRAC(a) ((a) - (int64_t)(a))
+#define FLOAT64_ROUND(a) ((int64_t)((a) < 0 ? (a) - 0.5 : (a) + 0.5))
 
 #ifdef __cplusplus
 }

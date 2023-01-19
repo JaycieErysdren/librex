@@ -32,7 +32,9 @@
  *
  * authors: erysdren
  *
- * last modified: january 16 2023
+ * last modified: january 18 2023
+ * 
+ * description: fixed point to floating point interop
  *
  * ********************************** */
 
@@ -47,14 +49,29 @@
 #define LIBREX_FLOAT32 3
 #define LIBREX_FLOAT64 4
 
-/* default base type to fixed */
-#ifndef LIBREX_BASE_TYPE
-#define LIBREX_BASE_TYPE LIBREX_FIX32
+/* default base real type to fixed32 */
+#ifndef LIBREX_REAL_TYPE
+#define LIBREX_REAL_TYPE LIBREX_FIX32
 #endif
 
 /* cpp guard */
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+/* *************************************
+ *
+ * headers
+ *
+ * ********************************** */
+
+/* if we're included outside of rex.h */
+#ifndef __LIBREX_H__
+
+/* rex */
+#include "rexfixed.h"
+#include "rexfloat.h"
+
 #endif
 
 /* *************************************
@@ -67,10 +84,10 @@ extern "C" {
  * 16-bit fixed point real
  */
 
-#if (LIBREX_BASE_TYPE == LIBREX_FIX16)
+#if (LIBREX_REAL_TYPE == LIBREX_FIX16)
 
 /* base type */
-typedef fix16 real;
+typedef fix16 real_t;
 
 /* static initialization macros */
 #define REAL(a) FIX16(a)
@@ -98,16 +115,16 @@ typedef fix16 real;
 #define REAL_TO_FLOAT32(a) FIX16_TO_FLOAT32(a)
 #define REAL_TO_FLOAT64(a) FIX16_TO_FLOAT64(a)
 
-#endif /* LIBREX_BASE_TYPE == LIBREX_FIX16 */
+#endif /* LIBREX_REAL_TYPE == LIBREX_FIX16 */
 
 /*
  * 32-bit fixed point real
  */
 
-#if (LIBREX_BASE_TYPE == LIBREX_FIX32)
+#if (LIBREX_REAL_TYPE == LIBREX_FIX32)
 
 /* base type */
-typedef fix32 real;
+typedef fix32 real_t;
 
 /* min, max, epsilon */
 #define REAL_EPSILON FIX32_EPSILON
@@ -135,16 +152,16 @@ typedef fix32 real;
 #define REAL_TO_FLOAT32(a) FIX32_TO_FLOAT32(a)
 #define REAL_TO_FLOAT64(a) FIX32_TO_FLOAT64(a)
 
-#endif /* LIBREX_BASE_TYPE == LIBREX_FIX32 */
+#endif /* LIBREX_REAL_TYPE == LIBREX_FIX32 */
 
 /*
  * 32-bit floating point real
  */
 
-#if (LIBREX_BASE_TYPE == LIBREX_FLOAT32)
+#if (LIBREX_REAL_TYPE == LIBREX_FLOAT32)
 
 /* base type */
-typedef float32 real;
+typedef float32 real_t;
 
 /* static initialization macros */
 #define REAL(a) FLOAT32(a)
@@ -172,16 +189,16 @@ typedef float32 real;
 #define REAL_TO_FLOAT32(a) (a)
 #define REAL_TO_FLOAT64(a) ((float64)(a))
 
-#endif /* LIBREX_BASE_TYPE == LIBREX_FLOAT32 */
+#endif /* LIBREX_REAL_TYPE == LIBREX_FLOAT32 */
 
 /*
  * 64-bit floating point real
  */
 
-#if (LIBREX_BASE_TYPE == LIBREX_FLOAT64)
+#if (LIBREX_REAL_TYPE == LIBREX_FLOAT64)
 
 /* base type */
-typedef float64 real;
+typedef float64 real_t;
 
 /* static initialization macros */
 #define REAL(a) FLOAT64(a)
@@ -209,7 +226,7 @@ typedef float64 real;
 #define REAL_TO_FLOAT32(a) ((float32)(a))
 #define REAL_TO_FLOAT64(a) (a)
 
-#endif /* LIBREX_BASE_TYPE == LIBREX_FLOAT64 */
+#endif /* LIBREX_REAL_TYPE == LIBREX_FLOAT64 */
 
 #ifdef __cplusplus
 }

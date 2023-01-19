@@ -32,17 +32,23 @@
  *
  * authors: erysdren
  *
- * last modified: january 16 2023
+ * last modified: january 18 2023
+ * 
+ * description: rexreal.h test app
  *
  * ********************************** */
 
+/* std */
+#include <stdio.h>
+#include <stdlib.h>
+
 /* rex */
-#include "rex.h"
+#include "rexreal.h"
 
 int main(int argc, char **argv)
 {
 	/* variables */
-	real t1, t2, t3, t4, t5, t6, t7;
+	real_t t1, t2, t3, t4, t5, t6, t7;
 
 	/* set values */
 	t1 = REAL(2.5f);

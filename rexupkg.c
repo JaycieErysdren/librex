@@ -32,12 +32,18 @@
  *
  * authors: erysdren
  *
- * last modified: january 16 2023
+ * last modified: january 18 2023
+ * 
+ * description: rexupkg.h test app
  *
  * ********************************** */
 
+/* std */
+#include <stdlib.h>
+#include <stdio.h>
+
 /* rex */
-#include "rex.h"
+#include "rexupkg.h"
 
 int main(int argc, char **argv)
 {
