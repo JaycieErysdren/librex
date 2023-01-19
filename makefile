@@ -128,6 +128,7 @@ all: clean \
 	rexstring \
 	rexupkg \
 	rexbase64 \
+	rexargs \
 	$(if $(DOS), rexdos) \
 
 ## real numbers
@@ -164,6 +165,11 @@ rexbase64:
 rexdos:
 	$(CC) $(CFLAGS) $(OUT)rexdos$(EXE) rexdos.c -I.
 	$(if $(WIN386), $(BIND) rexdos$(EXE) -n)
+
+## arg parsing
+rexargs:
+	$(CC) $(CFLAGS) $(OUT)rexargs$(EXE) rexargs.c -I.
+	$(if $(WIN386), $(BIND) rexargs$(EXE) -n)
 
 ## clean
 clean:

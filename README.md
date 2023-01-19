@@ -17,6 +17,7 @@ A collection of single-header C89 libraries to enhance your C programming experi
 | rexbase64.h 	| Base64 encoding and decoding of strings.					|
 | rexbits.h 	| Bit swapping between big and little endianness.			|
 | rexdos.h 		| DOS platform I/O. Supports both DJGPP and Open Watcom.	|
+| rexargs.h 	| Command line argument parsing.							|
 
 ## Building
 
