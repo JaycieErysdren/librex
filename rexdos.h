@@ -140,6 +140,13 @@ extern "C" {
 #define DOS_CURSOR_BLOCK 0x0007		/* solid block cursor */
 #define DOS_CURSOR_LINE 0x0607		/* default underline cursor */
 
+/*
+ * mouse button masks
+ */
+
+#define DOS_MOUSE_LMB 0x1
+#define DOS_MOUSE_RMB 0x2
+
 /* *************************************
  *
  * the types
@@ -177,6 +184,13 @@ static int dos_text_get_screen_columns();
 static int dos_text_get_screen_rows();
 static void dos_text_get_screen_size(int *w, int *h);
 static int dos_text_get_attributes();
+
+/* microsoft mouse */
+static void dos_mouse_enable();
+static void dos_mouse_show();
+static void dos_mouse_hide();
+static void dos_mouse_get(int16_t *x, int16_t *y, int16_t *b);
+static void dos_mouse_set(int16_t x, int16_t y, int16_t b);
 
 /* *************************************
  *
@@ -305,6 +319,56 @@ static int dos_text_get_attributes()
 	int386(0x10, &r, &r);
 
 	return r.h.ah;
+}
+
+/*
+ * microsoft mouse
+ */
+
+/* enable mouse driver */
+static void dos_mouse_enable()
+{
+	union REGS r;
+	r.w.ax = 0x00;
+	int386(0x33, &r, &r);
+}
+
+/* show mouse cursor */
+static void dos_mouse_show()
+{
+	union REGS r;
+	r.w.ax = 0x01;
+	int386(0x33, &r, &r);
+}
+
+/* hide mouse cursor */
+static void dos_mouse_hide()
+{
+	union REGS r;
+	r.w.ax = 0x02;
+	int386(0x33, &r, &r);
+}
+
+/* get mouse values */
+static void dos_mouse_get(int16_t *x, int16_t *y, int16_t *b)
+{
+	union REGS r;
+	r.w.ax = 0x03;
+	int386(0x33, &r, &r);
+	if (b) *b = r.w.bx;
+	if (x) *x = r.w.cx;
+	if (y) *y = r.w.dx;
+}
+
+/* set mouse values */
+static void dos_mouse_set(int16_t x, int16_t y, int16_t b)
+{
+	union REGS r;
+	r.w.ax = 0x04;
+	r.w.bx = b;
+	r.w.cx = x;
+	r.w.dx = y;
+	int386(0x33, &r, &r);
 }
 
 #ifdef __cplusplus

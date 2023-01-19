@@ -50,6 +50,11 @@ int main(int argc, char **argv)
 	/* set video mode to 3 (80x25 text mode) */
 	dos_set_mode(DOS_MODE_3);
 
+	/* mouse cursor test */
+	printf("mouse cursor test\n");
+	dos_mouse_enable();
+	dos_mouse_show();
+
 	/* set cursor shape */
 	dos_text_set_cursor_shape(DOS_CURSOR_BLOCK);
 
@@ -83,6 +88,7 @@ int main(int argc, char **argv)
 	while (!getchar());
 
 	/* set video mode to 3 (80x25 text mode) */
+	dos_mouse_hide();
 	dos_text_set_cursor_shape(DOS_CURSOR_LINE);
 	dos_set_mode(DOS_MODE_3);
 
