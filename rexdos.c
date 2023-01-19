@@ -52,6 +52,7 @@ int main(int argc, char **argv)
 
 	/* mouse cursor test */
 	printf("mouse cursor test\n");
+	printf("current video mode: %x\n", dos_get_mode());
 	dos_mouse_enable();
 	dos_mouse_show();
 

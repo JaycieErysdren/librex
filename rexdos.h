@@ -170,6 +170,7 @@ extern "C" {
 
 /* mode-agnostic functions */
 static void dos_set_mode(uint16_t mode);
+static int dos_get_mode();
 static void dos_clear_screen();
 
 /* graphics mode functions */
@@ -208,6 +209,15 @@ static void dos_set_mode(uint16_t mode)
 	union REGS r;
 	r.w.ax = mode;
 	int386(0x10, &r, &r);
+}
+
+/* get mode of vga adapter */
+static int dos_get_mode()
+{
+	union REGS r;
+	r.h.ah = 0x0f;
+	int386(0x10, &r, &r);
+	return r.h.al;
 }
 
 /* clear both video mode and text mode screen memory */
