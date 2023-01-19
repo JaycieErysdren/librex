@@ -66,6 +66,11 @@ typedef unsigned long uint32_t;			/* 32-bit unsigned int */
 typedef signed long long int64_t;		/* 64-bit signed int */
 typedef unsigned long long uint64_t;	/* 64-bit unsigned int */
 
+/* if, somehow, size_t is not defined */
+#ifndef _SIZE_T
+typedef uint32_t size_t;				/* size and stream offset */
+#endif
+
 #ifdef __cplusplus
 }
 #endif
