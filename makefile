@@ -32,7 +32,7 @@
 ##
 ## authors: erysdren
 ##
-## last modified: january 18 2023
+## last modified: february 1 2023
 ##
 ##=========================================
 
@@ -129,6 +129,7 @@ all: clean \
 	rexupkg \
 	rexbase64 \
 	rexargs \
+	rexsurface \
 	$(if $(DOS), rexdos) \
 
 ## real numbers
@@ -170,6 +171,11 @@ rexdos:
 rexargs:
 	$(CC) $(CFLAGS) $(OUT)rexargs$(EXE) rexargs.c -I.
 	$(if $(WIN386), $(BIND) rexargs$(EXE) -n)
+
+## pixel buffer operations
+rexsurface:
+	$(CC) $(CFLAGS) $(OUT)rexsurface$(EXE) rexsurface.c -I.
+	$(if $(WIN386), $(BIND) rexsurface$(EXE) -n)
 
 ## clean
 clean:
