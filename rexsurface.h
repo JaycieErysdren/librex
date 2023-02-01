@@ -90,6 +90,7 @@ typedef struct surface_t
 	int bpp;
 	int bytes_per_row;
 	void *pixels;
+	surface_t **palette;
 } surface_t;
 
 /* *************************************
@@ -103,12 +104,17 @@ surface_t *surface_create(int w, int h, int bpp, void *pixels);
 void surface_destroy(surface_t *s);
 
 /* surface modification */
+surface_t *surface_duplicate(surface_t *s);
+void surface_copy(surface_t *src, surface_t *dst);
 void surface_clear(surface_t *s, color_t *c);
 void surface_pixel(surface_t *s, int x, int y, color_t *c);
 void surface_filledbox(surface_t *s, int x, int y, int w, int h, color_t *c);
 void surface_borderbox(surface_t *s, int x, int y, int w, int h, color_t *c);
 void surface_line_horizontal(surface_t *s, int x1, int y, int x2, color_t *c);
 void surface_line_vertical(surface_t *s, int x, int y1, int y2, color_t *c);
+
+/* surface palette operations */
+void surface_set_palette(surface_t *s, surface_t **palette);
 
 /* miscellaneous */
 void surface_dump_buffer(surface_t *s, const char *filename);
@@ -175,6 +181,33 @@ void surface_destroy(surface_t *s)
 /*
  * surface modification
  */
+
+/* return a pointer to a new allocated surface (a copy of s) */
+surface_t *surface_duplicate(surface_t *s)
+{
+	/* variables */
+	surface_t *ret;
+
+	/* sanity checks */
+	if (!s || !s->pixels) return NULL;
+
+	/* create return surface */
+	ret = surface_create(s->w, s->h, s->bpp, NULL);
+	surface_copy(s, ret);
+
+	/* return pointer */
+	return ret;
+}
+
+/* copy the pixel contents from src to dst */
+void surface_copy(surface_t *src, surface_t *dst)
+{
+	/* sanity checks */
+	if (!src || !src->pixels || !dst || !dst->pixels) return;
+
+	/* perform copy */
+	memcpy(dst->pixels, src->pixels, src->bytes_per_row * src->h);
+}
 
 /* clear the surface with the specified color */
 void surface_clear(surface_t *s, color_t *c)
@@ -338,6 +371,21 @@ void surface_line_vertical(surface_t *s, int x, int y1, int y2, color_t *c)
 	{
 		surface_pixel(s, x, i, c);
 	}
+}
+
+/*
+ * surface palette operations
+ */
+
+/* set palette of surface */
+void surface_set_palette(surface_t *s, surface_t **palette)
+{
+	/* sanity checks */
+	if (!s || !palette || !*palette) return;
+	if ((*palette)->bpp < 16) return;
+
+	/* set palette */
+	s->palette = palette;
 }
 
 /*

@@ -48,25 +48,30 @@
 int main(int argc, char **argv)
 {
 	/* variables */
-	surface_t *surface;
+	surface_t *s1, *s2;
 	color_t red, black;
 
 	/* create surface */
-	surface = surface_create(64, 64, 32, NULL);
+	s1 = surface_create(64, 64, 32, NULL);
 
 	/* create colors */
 	color_set_argb8888(&red, 255, 0, 255, 255);
 	color_set_argb8888(&black, 0, 0, 0, 255);
 
 	/* clear surface */
-	surface_clear(surface, &black);
-	surface_borderbox(surface, 32, 32, 16, 16, &red);
+	surface_clear(s1, &black);
+	surface_borderbox(s1, 32, 32, 16, 16, &red);
+
+	/* duplicate s1 to s2 */
+	s2 = surface_duplicate(s1);
 
 	/* save surface */
-	surface_dump_buffer(surface, "test.data");
+	surface_dump_buffer(s1, "test1.data");
+	surface_dump_buffer(s2, "test2.data");
 
 	/* destroy surface */
-	surface_destroy(surface);
+	surface_destroy(s1);
+	surface_destroy(s2);
 
 	/* exit gracefully */
 	return EXIT_SUCCESS;
