@@ -18,6 +18,7 @@ A collection of single-header C89 libraries to enhance your C programming experi
 | rexbits.h 	| Bit swapping between big and little endianness.			|
 | rexdos.h 		| DOS platform I/O. Supports both DJGPP and Open Watcom.	|
 | rexargs.h 	| Command line argument parsing.							|
+| rexsurface.h 	| Pixel buffer operations.									|
 
 ## Building
 
