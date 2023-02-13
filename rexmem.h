@@ -32,7 +32,7 @@
  *
  * authors: erysdren
  *
- * last modified: january 18 2023
+ * last modified: february 13 2023
  * 
  * description: memory management helpers
  *
@@ -94,18 +94,19 @@ typedef struct mempool
  * ********************************** */
 
 /* mempool creation and destruction */
-void mempool_createpool(mempool *mp, size_t size, size_t min_alloc);
-void mempool_freepool(mempool *mp);
+static void mempool_createpool(mempool *mp, size_t size, size_t min_alloc);
+static void mempool_freepool(mempool *mp);
 
 /* allocate and free memory from pool */
-void *mempool_alloc(mempool *mp, size_t size);
-void mempool_free(mempool *mp, void *ptr);
+static void *mempool_alloc(mempool *mp, size_t size);
+static void mempool_free(mempool *mp, void *ptr);
 
-/* helpful custom memset functions */
-void *memset8(void *s, uint8_t c, size_t n);
-void *memset16(void *s, uint16_t c, size_t n);
-void *memset32(void *s, uint32_t c, size_t n);
-void *memset64(void *s, uint64_t c, size_t n);
+/* helpful custom memory functions */
+static void *memset8(void *s, uint8_t c, size_t n);
+static void *memset16(void *s, uint16_t c, size_t n);
+static void *memset32(void *s, uint32_t c, size_t n);
+static void *memset64(void *s, uint64_t c, size_t n);
+static int memcompare(void *a, void *b, size_t n);
 
 /* *************************************
  *
@@ -118,7 +119,7 @@ void *memset64(void *s, uint64_t c, size_t n);
  */
 
 /* create a memory pool of s size */
-void mempool_createpool(mempool *mp, size_t size, size_t min_alloc)
+static void mempool_createpool(mempool *mp, size_t size, size_t min_alloc)
 {
 	/* sanity checks */
 	assert(mp);
@@ -136,7 +137,7 @@ void mempool_createpool(mempool *mp, size_t size, size_t min_alloc)
 }
 
 /* free all memory used in a memory pool, leaving it ready for reuse */
-void mempool_freepool(mempool *mp)
+static void mempool_freepool(mempool *mp)
 {
 	/* sanity check */
 	assert(mp);
@@ -150,7 +151,7 @@ void mempool_freepool(mempool *mp)
  */
 
 /* allocate memory from pool */
-void *mempool_alloc(mempool *mp, size_t size)
+static void *mempool_alloc(mempool *mp, size_t size)
 {
 	/* variables */
 	void *ret;
@@ -169,18 +170,18 @@ void *mempool_alloc(mempool *mp, size_t size)
 }
 
 /* free memory in pool */
-void mempool_free(mempool *mp, void *ptr)
+static void mempool_free(mempool *mp, void *ptr)
 {
 	/* sanity check */
 	assert(mp && ptr);
 }
 
 /* 
- * helpful custom memset functions
+ * helpful custom memory functions
  */
 
 /* set n 1-byte segments of s to c */
-void *memset8(void *s, uint8_t c, size_t n)
+static void *memset8(void *s, uint8_t c, size_t n)
 {
 	/* variables */
 	uint8_t *dst = (uint8_t *)s;
@@ -193,7 +194,7 @@ void *memset8(void *s, uint8_t c, size_t n)
 }
 
 /* set n 2-byte segments of s to c */
-void *memset16(void *s, uint16_t c, size_t n)
+static void *memset16(void *s, uint16_t c, size_t n)
 {
 	/* variables */
 	uint16_t *dst = (uint16_t *)s;
@@ -206,7 +207,7 @@ void *memset16(void *s, uint16_t c, size_t n)
 }
 
 /* set n 4-byte segments of s to c */
-void *memset32(void *s, uint32_t c, size_t n)
+static void *memset32(void *s, uint32_t c, size_t n)
 {
 	/* variables */
 	uint32_t *dst = (uint32_t *)s;
@@ -219,7 +220,7 @@ void *memset32(void *s, uint32_t c, size_t n)
 }
 
 /* set n 8-byte segments of s to c */
-void *memset64(void *s, uint64_t c, size_t n)
+static void *memset64(void *s, uint64_t c, size_t n)
 {
 	/* variables */
 	uint64_t *dst = (uint64_t *)s;
@@ -229,6 +230,23 @@ void *memset64(void *s, uint64_t c, size_t n)
 
 	/* return pointer to memory */
 	return s;
+}
+
+/* compare two pieces of memory n bytes in size */
+static int memcompare(void *a, void *b, size_t n)
+{
+	const unsigned char *a1, *b1;
+
+	a1 = (const unsigned char *)a;
+	b1 = (const unsigned char *)b;
+
+	while (n-- > 0)
+	{
+		if (*a1++ != *b1++)
+			return 1;
+	}
+
+	return 0;
 }
 
 #ifdef __cplusplus
